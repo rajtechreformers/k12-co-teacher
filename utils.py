@@ -2,6 +2,7 @@ import fitz
 import re
 import boto3
 import json
+import os
 
 # pdf extraction utils
 def extract_text_from_pdf(pdf_path):
@@ -21,6 +22,13 @@ def split_into_sections(text, headers):
         section_content = text[start:end].strip()
         sections[section_title] = section_content
     return sections
+
+def get_pdf_paths(directory):
+    return [
+        os.path.join(directory, f)
+        for f in os.listdir(directory)
+        if f.lower().endswith(".pdf")
+    ]
 
 # invoke bedrock
 def call_bedrock(prompt, model_id="us.anthropic.claude-3-5-sonnet-20241022-v2:0"):

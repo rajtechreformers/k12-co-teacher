@@ -1,8 +1,7 @@
 import json
-from utils import extract_text_from_pdf, split_into_sections, call_bedrock
+from utils import extract_text_from_pdf, split_into_sections, call_bedrock, get_pdf_paths
 
 # TODO: 
-# 1. support multiple students passing in their needs/modifications
 # 2. streamlit ui interface for upload
 # 3. being able to see the diff between original vs. generated modifications
 
@@ -91,6 +90,7 @@ def generate_lesson_modifications(sections):
         return {}
 
 def build_final_lesson_plan(lesson_text, student_data):
+    student_json_block = "\n".join(json.dumps(i, indent=2) for i in student_data)
     grouped_prompt = f"""
     You are a special education specialist tasked with creating individualized modifications for a lesson plan to support diverse learners. Your goal is to analyze student data and provide specific, categorized modifications that address each student's unique needs while maintaining the core objectives of the lesson.
 
@@ -101,9 +101,9 @@ def build_final_lesson_plan(lesson_text, student_data):
     {lesson_text}
     </original_lesson_plan>
 
-    2. Here is the structured student data. Each entry contains the type of impairment, specific name, associated instructional needs, and recommended lesson modifications. Use this JSON structure directly:
+    2. Here is the structured students data. Each entry contains the type of impairment, specific name, associated instructional needs, and recommended lesson modifications. Use this JSON structure directly:
     <student_data_json>
-    {json.dumps(student_data, indent=2)}
+    {student_json_block}
     </student_data_json>
 
     3. Create modifications for the lesson plan based on the student's needs and recommended modifications. Focus on making the lesson more inclusive and accessible while maintaining its core objectives.
@@ -155,7 +155,9 @@ def build_final_lesson_plan(lesson_text, student_data):
     """
     return call_bedrock(grouped_prompt)
 
-if __name__ == "__main__":
+def process_student_reports(reports, original_lesson_txt):
+    """takes in a list of student IEP's and generates a modified lesson plan"""
+    student_modifications = []
     section_labels = [
         "REASON FOR REFERRAL", "ASSESSMENT TOOLS", "ASSESSMENT GUIDELINES AND CONSIDERATIONS",
         "BACKGROUND INFORMATION", "DEVELOPMENT, HEARING, AND VISION", "PREVIOUS ASSESSMENTS",
@@ -164,21 +166,23 @@ if __name__ == "__main__":
         "OVERALL COGNITIVE SKILLS", "PROCESSING SKILLS", "SOCIAL-EMOTIONAL, BEHAVIORAL, AND ADAPTIVE SKILLS",
         "ORAL LANGUAGE ASSESSMENT", "ACADEMIC SKILLS", "CONCLUSION", "ELIGIBILITY RECOMMENDATIONS AND CONSIDERATIONS"
     ]
-
-    report_text = extract_text_from_pdf("data/OHI Report.pdf")
-    print("Extracted text from student report...")
-    sections = split_into_sections(report_text, section_labels)
-    # print(sections["ELIGIBILITY RECOMMENDATIONS AND CONSIDERATIONS"])
-    modifications = generate_lesson_modifications(sections)
-    print("Generated modifcations for student...")
-    lesson_text = extract_text_from_pdf("data/Madelyn_Hunter_Calculus.pdf")
-    print("Extracted text from lesson plan...")
-    final_plan = build_final_lesson_plan(lesson_text, modifications)
-    
-    with open("new_lesson_plan_sld_calc.txt", "w", encoding="utf-8") as f:
+    for report in reports:
+        report_text = extract_text_from_pdf(report)
+        print("Extracted text from student report...")
+        sections = split_into_sections(report_text, section_labels)
+        modifications = generate_lesson_modifications(sections)
+        student_modifications.append(modifications)
+    final_plan = build_final_lesson_plan(lesson_text, student_modifications)
+    with open("new_lesson_plan_all_students.txt", "w", encoding="utf-8") as f:
         f.write(lesson_text)
         f.write("\n")
         f.write(final_plan)
+
+if __name__ == "__main__":
+    reports = get_pdf_paths("reports")
+    lesson_text = extract_text_from_pdf("data/Madelyn_Hunter_Calculus.pdf")
+    print("Extracted text from lesson plan...")
+    process_student_reports(reports, lesson_text)
     print("Modified lesson plan successfully generated!")
    
 
