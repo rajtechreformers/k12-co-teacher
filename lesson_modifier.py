@@ -172,9 +172,9 @@ def process_student_reports(reports, original_lesson_txt):
         sections = split_into_sections(report_text, section_labels)
         modifications = generate_lesson_modifications(sections)
         student_modifications.append(modifications)
-    final_plan = build_final_lesson_plan(lesson_text, student_modifications)
+    final_plan = build_final_lesson_plan(original_lesson_txt, student_modifications)
     with open("new_lesson_plan_all_students.txt", "w", encoding="utf-8") as f:
-        f.write(lesson_text)
+        f.write(original_lesson_txt)
         f.write("\n")
         f.write(final_plan)
 
