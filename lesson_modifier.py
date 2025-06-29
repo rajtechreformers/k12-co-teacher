@@ -89,7 +89,7 @@ def generate_lesson_modifications(sections):
         print(f"Error decoding JSON: {e}")
         return {}
 
-def build_final_lesson_plan(lesson_text, student_data):
+def generate_modified_lesson_plan(lesson_text, student_data):
     student_json_block = "\n".join(json.dumps(i, indent=2) for i in student_data)
     grouped_prompt = f"""
     You are a special education specialist tasked with creating individualized modifications for a lesson plan to support diverse learners. Your goal is to analyze student data and provide specific, categorized modifications that address each student's unique needs while maintaining the core objectives of the lesson.
@@ -155,7 +155,7 @@ def build_final_lesson_plan(lesson_text, student_data):
     """
     return call_bedrock(grouped_prompt)
 
-def process_student_reports(reports, original_lesson_txt):
+def modify_lesson_plan(report_paths, lesson_plan_path):
     """takes in a list of student IEP's and generates a modified lesson plan"""
     student_modifications = []
     section_labels = [
@@ -166,23 +166,28 @@ def process_student_reports(reports, original_lesson_txt):
         "OVERALL COGNITIVE SKILLS", "PROCESSING SKILLS", "SOCIAL-EMOTIONAL, BEHAVIORAL, AND ADAPTIVE SKILLS",
         "ORAL LANGUAGE ASSESSMENT", "ACADEMIC SKILLS", "CONCLUSION", "ELIGIBILITY RECOMMENDATIONS AND CONSIDERATIONS"
     ]
-    for report in reports:
-        report_text = extract_text_from_pdf(report)
+
+    # extract txt from lesson plan
+    original_lesson_txt = extract_text_from_pdf(lesson_plan_path)
+    print("Extracted text from lesson plan...")
+
+    # extract txt from student IEP reports + generate modifications
+    for report_path in report_paths:
+        report_text = extract_text_from_pdf(report_path)
         print("Extracted text from student report...")
         sections = split_into_sections(report_text, section_labels)
         modifications = generate_lesson_modifications(sections)
         student_modifications.append(modifications)
-    final_plan = build_final_lesson_plan(original_lesson_txt, student_modifications)
+    final_plan = generate_modified_lesson_plan(original_lesson_txt, student_modifications)
     with open("new_lesson_plan_all_students.txt", "w", encoding="utf-8") as f:
         f.write(original_lesson_txt)
         f.write("\n")
         f.write(final_plan)
 
 if __name__ == "__main__":
-    reports = get_pdf_paths("reports")
-    lesson_text = extract_text_from_pdf("data/Madelyn_Hunter_Calculus.pdf")
-    print("Extracted text from lesson plan...")
-    process_student_reports(reports, lesson_text)
+    path_to_reports = get_pdf_paths("reports")
+    path_to_lesson_plan= "data/Madelyn_Hunter_Calculus.pdf"
+    modify_lesson_plan(path_to_reports, path_to_lesson_plan)
     print("Modified lesson plan successfully generated!")
    
 
