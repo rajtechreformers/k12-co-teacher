@@ -11,6 +11,10 @@ from utils import convert_to_html
 # 4. if more IEPs are uploaded it should modify the existing lesson plan file.
 
 st.title("📝 Lesson Plan Modifier")
+st.markdown("""
+Upload a general education **lesson plan** and one or more **IEP student reports**.
+The system will modify the lesson plan to include differentiated supports for each student.
+""")
 with st.expander("📥 Upload Your Files", expanded=True):
     col1, col2 = st.columns(2)
     with col1:
@@ -38,7 +42,6 @@ if student_files:
         bytes_data = uploaded_file.read()
         with open(students_file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
-        st.write(f"saved: {students_file_path}")
 
 # saving lesson plan files to local dir
 if lesson_plan:
@@ -47,23 +50,21 @@ if lesson_plan:
     bytes_data = lesson_plan.read()
     with open(lesson_file_path, "wb") as f:
         f.write(lesson_plan.getbuffer())
-        st.write(f"saved: {lesson_file_path}")
 
 # modifying lesson plan based on students' needs
 if student_files and lesson_plan:
     modified_lesson_path = "modified_lesson.txt"
     output_file = modified_lesson_path
-    st.write("Modifying lesson plan ...")
-    modify_lesson_plan(student_file_paths, lesson_file_path, output_file)
-    
+    with st.spinner("Modifying lesson plan ..."):
+        modify_lesson_plan(student_file_paths, lesson_file_path, output_file)
     if os.path.exists(modified_lesson_path):
         with open(modified_lesson_path, "r", encoding="utf-8") as f:
             modified_text = f.read()
         st.subheader("Modified Lesson Plan")
         # generate html for lesson plan
         modified_lesson_html = f"modified_lesson{uuid.uuid4()}.html"
-        st.write("Converting lesson plan to html ...")
-        convert_to_html(modified_lesson_path, modified_lesson_html)
+        with st.spinner("Converting lesson plan to HTML..."):
+            convert_to_html(modified_lesson_path, modified_lesson_html)
         with open(modified_lesson_html, "r", encoding="utf-8") as f:
             html_content = f.read()
         components.html(html_content, height=700, scrolling=True)
