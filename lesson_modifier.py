@@ -2,8 +2,8 @@ import json
 from utils import extract_text_from_pdf, split_into_sections, call_bedrock, get_pdf_paths
 
 # TODO: 
-# 2. streamlit ui interface for upload
-# 3. being able to see the diff between original vs. generated modifications
+# 1. generate better docx/pdf output of modified lesson plan
+# 2. interactive streamlit interface to add/remove modifications (diff)
 
 def generate_lesson_modifications(sections):
     prompt = f"""
@@ -122,12 +122,12 @@ def generate_modified_lesson_plan(lesson_text, student_data):
     7. Format your response as follows:
 
     <output_format>
-        Return only the content under the heading **Modifications for Diverse Learners**.
+        Return only the content under the heading MODIFICATIONS FOR DIVERSE LEARNERS.
         Do not include any wrapping XML tags (like <response>), no brackets, and no placeholder phrases like "[Original lesson plan remains unchanged]".
-        Your output should begin with "**Modifications for Diverse Learners**" and end with the last category.
+        Your output should begin with "MODIFICATIONS FOR DIVERSE LEARNERS" and end with the last category.
         Nothing should come before or after this section.
-        **Modifications for Diverse Learners**
-
+        MODIFICATIONS FOR DIVERSE LEARNERS
+        
         Instruction:
         - [Bullet point modification][type of disability or impairment]
         - [Bullet point modification][type of disability or impairment]
@@ -147,7 +147,6 @@ def generate_modified_lesson_plan(lesson_text, student_data):
         Environment/Technology (if applicable):
         - [Bullet point modification][type of disability or impairment]
         - [Bullet point modification][type of disability or impairment]
-
     </output_format>
 
     Remember to tailor the modifications to address the specific needs of the student while ensuring they align with the lesson's objectives and standards.
@@ -155,7 +154,7 @@ def generate_modified_lesson_plan(lesson_text, student_data):
     """
     return call_bedrock(grouped_prompt)
 
-def modify_lesson_plan(report_paths, lesson_plan_path):
+def modify_lesson_plan(report_paths, lesson_plan_path, output_file="new_lesson.txt"):
     """takes in a list of student IEP's and generates a modified lesson plan"""
     student_modifications = []
     section_labels = [
@@ -179,7 +178,7 @@ def modify_lesson_plan(report_paths, lesson_plan_path):
         modifications = generate_lesson_modifications(sections)
         student_modifications.append(modifications)
     final_plan = generate_modified_lesson_plan(original_lesson_txt, student_modifications)
-    with open("new_lesson_plan_all_students.txt", "w", encoding="utf-8") as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(original_lesson_txt)
         f.write("\n")
         f.write(final_plan)

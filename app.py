@@ -1,10 +1,14 @@
-import streamlit as st
-from lesson_modifier import modify_lesson_plan
 import os
+import streamlit as st
+import streamlit.components.v1 as components
+import uuid
+from lesson_modifier import modify_lesson_plan
+from utils import convert_to_html
+
 # 1. take in a single lesson plan
 # 2. take in one or more student files
 # 3. modify the lesson plan and output it
-# 4. if more IEPs are uploaded edit it more.
+# 4. if more IEPs are uploaded it should modify the existing lesson plan file.
 
 st.title('Lesson Plan Modifer')
 student_files = st.file_uploader(
@@ -43,15 +47,22 @@ if lesson_plan:
 
 # modifying lesson plan based on students' needs
 if student_files and lesson_plan:
+    modified_lesson_path = "modified_lesson.txt"
+    output_file = modified_lesson_path
     st.write("Modifying lesson plan ...")
-    modify_lesson_plan(student_file_paths, lesson_file_path)
-    modified_lesson_path = "new_lesson_plan_all_students.txt"
-
+    modify_lesson_plan(student_file_paths, lesson_file_path, output_file)
+    
     if os.path.exists(modified_lesson_path):
         with open(modified_lesson_path, "r", encoding="utf-8") as f:
             modified_text = f.read()
         st.subheader("Modified Lesson Plan")
-        st.text_area("Preview:", modified_text, height=400)
+        # generate html for lesson plan
+        modified_lesson_html = f"modified_lesson{uuid.uuid4()}.html"
+        st.write("Converting lesson plan to html ...")
+        convert_to_html(modified_lesson_path, modified_lesson_html)
+        with open(modified_lesson_html, "r", encoding="utf-8") as f:
+            html_content = f.read()
+        components.html(html_content, height=700, scrolling=True)
 
 
 

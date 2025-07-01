@@ -135,11 +135,17 @@ def render_html(metadata, sections, output_path="lesson_plan.html"):
                 """)
         f.write("</div></body></html>")
 
-# testing
-text = Path("new_lesson_plan_all_students.txt").read_text()
-meta = extract_metadata(text)
-sections = extract_sections(text)
-render_html(meta, sections, "madelyn_hunter_generated.html")
+
+def convert_to_html(mod_lesson_path, designated_file_name):
+    text = Path(mod_lesson_path).read_text()
+    meta = extract_metadata(text)
+    sections = extract_sections(text)
+    render_html(meta, sections, designated_file_name)
+
+
+# convert_to_html("new_lesson_plan_all_students.txt", "madelyn_hunter_generated.html")
+
+    
 
 
 
