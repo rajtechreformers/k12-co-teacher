@@ -10,13 +10,17 @@ from utils import convert_to_html
 # 3. modify the lesson plan and output it
 # 4. if more IEPs are uploaded it should modify the existing lesson plan file.
 
-st.title('Lesson Plan Modifer')
-student_files = st.file_uploader(
-    "please upload student IEP files here", accept_multiple_files=True, type=["pdf"]
-)
-lesson_plan = st.file_uploader(
-    "please upload the lesson plan you plan on modifying here", type=["pdf"]
-)
+st.title("📝 Lesson Plan Modifier")
+with st.expander("📥 Upload Your Files", expanded=True):
+    col1, col2 = st.columns(2)
+    with col1:
+        lesson_plan = st.file_uploader(
+            "Upload a Lesson Plan", type=["pdf"]
+        )
+    with col2:
+        student_files = st.file_uploader(
+            "Upload IEPs (1 or more) here", accept_multiple_files=True, type=["pdf"]
+        )
 
 # create folders
 student_reports_path = "student_reports"
