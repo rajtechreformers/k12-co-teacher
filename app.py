@@ -4,11 +4,7 @@ import streamlit.components.v1 as components
 import uuid
 from lesson_modifier import modify_lesson_plan
 from utils import convert_to_html
-
-# 1. take in a single lesson plan
-# 2. take in one or more student files
-# 3. modify the lesson plan and output it
-# 4. if more IEPs are uploaded it should modify the existing lesson plan file.
+from weasyprint import HTML
 
 st.title("📝 Lesson Plan Modifier")
 st.markdown("""
@@ -56,7 +52,26 @@ if student_files and lesson_plan:
     modified_lesson_path = "modified_lesson.txt"
     output_file = modified_lesson_path
     with st.spinner("Modifying lesson plan ..."):
-        modify_lesson_plan(student_file_paths, lesson_file_path, output_file)
+        student_modifications = modify_lesson_plan(student_file_paths, lesson_file_path, output_file)
+    
+    # using fake student data for now
+    # displaying students + corrs disabilities and modifications
+    names = ["April Chan", "May Smith"]
+    names_to_modifications = {}
+    for i in range(len(student_modifications)):
+        names_to_modifications[names[i]] = student_modifications[i]
+    st.markdown("## 🧑‍🎓 Student-Specific Modifications")
+    for student_name, student_data in names_to_modifications.items():
+        with st.expander(f"{student_name}", expanded=False):
+            for disability in student_data.get("identified_disabilities_or_impairments", []):
+                st.markdown(
+                    f"<h2>{disability['name'].title()}</h2><p>({disability['type'].replace('_', ' ').title()})</p>",
+                    unsafe_allow_html=True
+                )
+                st.markdown("Recommended Modifications:", unsafe_allow_html=True)
+                mod_list = "".join([f"<li>{mod}</li>" for mod in disability["recommended_modifications"]])
+                st.markdown(f"<ul>{mod_list}</ul>", unsafe_allow_html=True)
+
     if os.path.exists(modified_lesson_path):
         with open(modified_lesson_path, "r", encoding="utf-8") as f:
             modified_text = f.read()
@@ -68,10 +83,11 @@ if student_files and lesson_plan:
         with open(modified_lesson_html, "r", encoding="utf-8") as f:
             html_content = f.read()
         components.html(html_content, height=700, scrolling=True)
-
-
-
-    
+        HTML(modified_lesson_html).write_pdf("modified_lesson.pdf")
+        st.download_button("download PDF", 
+                           open("modified_lesson.pdf", "rb").read(),
+                           file_name="modified_lesson.pdf", 
+                           mime="application/pdf")
 
 
 

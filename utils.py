@@ -135,7 +135,6 @@ def render_html(metadata, sections, output_path="lesson_plan.html"):
                 """)
         f.write("</div></body></html>")
 
-
 def convert_to_html(mod_lesson_path, designated_file_name):
     text = Path(mod_lesson_path).read_text()
     meta = extract_metadata(text)

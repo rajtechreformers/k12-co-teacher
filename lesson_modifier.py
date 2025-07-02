@@ -165,7 +165,6 @@ def modify_lesson_plan(report_paths, lesson_plan_path, output_file="new_lesson.t
         "OVERALL COGNITIVE SKILLS", "PROCESSING SKILLS", "SOCIAL-EMOTIONAL, BEHAVIORAL, AND ADAPTIVE SKILLS",
         "ORAL LANGUAGE ASSESSMENT", "ACADEMIC SKILLS", "CONCLUSION", "ELIGIBILITY RECOMMENDATIONS AND CONSIDERATIONS"
     ]
-
     # extract txt from lesson plan
     original_lesson_txt = extract_text_from_pdf(lesson_plan_path)
     print("Extracted text from lesson plan...")
@@ -182,6 +181,7 @@ def modify_lesson_plan(report_paths, lesson_plan_path, output_file="new_lesson.t
         f.write(original_lesson_txt)
         f.write("\n")
         f.write(final_plan)
+    return student_modifications
 
 if __name__ == "__main__":
     path_to_reports = get_pdf_paths("reports")
