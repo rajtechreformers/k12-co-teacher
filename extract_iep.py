@@ -3,6 +3,12 @@ from pdf2image import convert_from_path
 from collections import defaultdict
 import os, json, boto3, base64
 
+def load_prompt(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+CLAUDE_IEP_PROMPT= dedent(load_prompt("prompts/claude3.5_iep_prompt.txt"))    
+
 def convert_pdf_to_images(pdf_path, output_dir="images", dpi=200):
     os.makedirs(output_dir, exist_ok=True)
     images = convert_from_path(pdf_path, dpi=dpi)
@@ -13,47 +19,6 @@ def convert_pdf_to_images(pdf_path, output_dir="images", dpi=200):
         image_paths.append(path)
     return image_paths
 
-CLAUDE_IEP_PROMPT_TEMPLATE = dedent("""
-    You are a special education document analyst reviewing an Individualized Education Program (IEP).
-
-    Extract structured information about the student's support plan. Only use details that are **explicitly stated** in this chunk.
-
-    Return the following fields under `student_profile_partial`:
-
-    - `iep_goals`: list of annual goals described in the IEP
-    - `accommodations`: list of instructional or testing accommodations. Be specific if it is pertaining to a certain subject, assessment, task, etc.
-    - `services`: list of services provided to the student, each with:
-        * `type` (e.g., "Specialized Academic Instruction", "Speech Therapy")
-        * `frequency` (e.g., "2x/week", "500 minutes weekly")
-        * `start_date` (if available, YYYY-MM-DD)
-        * `end_date` (if available, YYYY-MM-DD)
-    - `placement`: overall description of the student's placement (e.g., "General Education 80% or more", "Special Day Class")
-
-    Only include fields if clearly mentioned in this chunk.
-
-    Return only a valid JSON object parsable by `json.loads()` — no markdown, no commentary.
-
-    {
-    "student_profile_partial": {
-        "iep_goals": ["..."],
-        "accommodations": ["..."],
-        "services": [
-        {
-            "type": "Speech and Language Services",
-            "frequency": "1x/week for 30 minutes",
-            "start_date": "2024-10-01",
-            "end_date": "2025-06-01"
-        }
-        ],
-        "placement": "General Education 80% or more"
-    }
-    }
-
-    Here is the raw text:
-    ---
-    {{CHUNK}}
-""")
-                                    
 def call_claude_with_image(image_path, prompt_template):
     with open(image_path, "rb") as f:
         image_bytes = f.read()
@@ -122,7 +87,7 @@ def extract_student_info_from_iep(input_path):
     all_outputs = []
     for img_path in image_paths:
         print(f"\nOutput for {img_path}:")
-        result = call_claude_with_image(img_path, CLAUDE_IEP_PROMPT_TEMPLATE)
+        result = call_claude_with_image(img_path, CLAUDE_IEP_PROMPT)
         print(result)
         try:
             parsed = json.loads(result)
@@ -136,5 +101,5 @@ def extract_student_info_from_iep(input_path):
         json.dump(merged_profile, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
-    input_pdf = "data/IEP_Redacted_Lawrence.pdf"
+    input_pdf = "data/IEP_Redacted_Johansson.pdf"
     extract_student_info_from_iep(input_pdf)

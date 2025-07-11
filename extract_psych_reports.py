@@ -61,109 +61,11 @@ def prepare_claude_chunks(pdf_path, pages_per_chunk=5):
         chunks.append(dedent(chunk_text.strip()))
     return chunks
 
-
-# TODO: improve prompt to better detect OHI 
-CLAUDE_PROMPT_TEMPLATE = dedent("""
-    You are a special education document analyst reviewing a student psychological evaluation report used for IEP planning.
-
-    Below are the official definitions of disability categories. Use them strictly to match and identify any impairments mentioned in the report.
-
-    ---
-
-    <specific_learning_disability_definition>
-        THESE DISABILITIES ARE NEUROLOGICAL IN ORIGIN AND IMPACT THE PROCESSES INVOLVED IN UNDERSTANDING OR USING SPOKEN OR WRITTEN LANGUAGE.
-        These disabilities include:
-        1. dyslexia
-        2. dysgraphia
-        3. dyscalculia
-        4. auditory processing disorder
-        5. visual processing disorder
-        6. nonverbal learning disorder
-        7. executive functioning deficits
-    </specific_learning_disability_definition>
-
-    <other_health_impaired_definition>
-        THIS INCLUDES STUDENTS WHOSE HEALTH CONDITIONS SIGNIFICANTLY IMPACT THEIR STRENGTH, ENERGY, OR ALERTNESS, THEREBY AFFECTING THEIR EDUCATIONAL PERFORMANCE. BELOW ARE THE KEY AREAS COVERED UNDER OHI:
-        1. Chronic or Acute Health Conditions (Asthma, Diabetes, Epilepsy, Heart conditions, Sickle cell anemia, Cancer)
-        2. Attention Hyperactivity Disorder (ADHD)
-        3. Tourette Syndrome
-        4. Neurological Disorders (cerebral palsy, traumatic brain injury, multiple sclerosis)
-        5. Autoimmune Disorders (Lupus, rheumatoid arthritis)
-        6. Blood Disorders (hemophilia, leukemia)
-        7. Chronic Fatigue or Energy Limitations (Chronic Fatigue Syndrome, fibromyalgia)
-        8. Mental Health Conditions (emotional disturbance, anxiety, depression)
-        9. Medical Fragility (Students with feeding tubes or oxygen dependency)
-    </other_health_impaired_definition>
-
-    ---
-
-    Please do the following:
-    1. Extract a list of all section headings you identify, keeping their **EXACT** original titles as shown in the report.
-    2. Identify which section headings are **KEY for IEP decision-making**, focusing on:
-    - Cognitive assessment
-    - Academic performance
-    - Social-emotional status
-    - Health/medical info
-    - Recommendations
-    - Eligibility statements
-
-    3. Build a `student_profile_partial` object using ONLY what is mentioned in this chunk. 
-    Extract:
-    - first_name (or null)
-    - last_name (or null)
-    - student_id (UUID or null)
-    - iep_goals (list)
-    - accommodations (list)
-    - learning_styles (list)
-    - `disabilities`: A list of objects each with:
-        * `type`: must be `"specific_learning_disability"` or `"other_health_impairment"`
-        * `name`: must match exactly one of the 16 official categories defined above
-        * Only include if there is **explicit evidence** from sections on **ELIGIBILITY RECOMMENDATIONS AND CONSIDERATIONS** sections that the student is **identified with** or **meets criteria for** that condition.
-        * Look for language such as “meets criteria for…”, “is eligible under…”, or “is identified with…” — do not include vague or speculative mentions.
-    - interviews (dict with keys: teacher, parent) with overall interview information that would be helpful to know in the student profile.
-    - observations (dict with key: psychologist) with overall summary of the psychologist's observation of student.
-
-    4. For `key_iep_sections`, only use the **exact section titles** found in the document — do not reword or shorten.
-    
-    Return only a valid JSON object, directly parsable by Python `json.loads()` — no markdown, no extra commentary.
-    {
-        "key_iep_sections": {
-            "RECOMMENDATIONS": "...",
-            "COGNITIVE ASSESSMENT": "..."
-        },
-        "student_profile_partial": {
-            "first_name": null,
-            "last_name": null,
-            "student_id": null,
-            "iep_goals": ["..."],
-            "accommodations": ["..."],
-            "learning_styles": ["..."],
-            "disabilities": [
-                {
-                    "type": "specific_learning_disability" //[if applicable and mentioned],
-                    "name": "Dyslexia" 
-                },
-                {
-                    "type": "other_health_impairment" //[if applicable and mentioned],
-                    "name": "Attention Hyperactivity Disorder (ADHD)"
-                
-                }
-            ],
-            "interviews": {
-                "teacher": "Teachers described STUDENT as a kind, calm, happy, creative, eager to answer, and distracted child. They reported her strengths as creativity, kindness, motivation, working well with others, and self-advocacy.",
-                "parent": "Parent described STUDENT as sweet, kind, and artistic. Parent reported that STUDENT loves to read and draw. She reported that STUDENT is curious and wants to learn. She loves art and creative classes. "
-            },
-            "observations": {
-                "psychologist": "STUDENT was observed during her language arts and math classes. She was observed to struggle to follow directions given, missing details in the information presented. Likewise, she required staff prompting for on-task behavior. Socially, she was observed interacting with peers and seeking peer interactions. During assessment sessions, STUDENT was observed to struggle with focus and attention, seeking items to fidget with and requiring prompting for on-task behavior"
-            }
-        }
-    }
-
-    Here is the raw text:
-    ---
-    {{CHUNK}}
-
-""")                                
+def load_prompt_with_chunk(path, chunk_text):
+    with open(path, "r", encoding="utf-8") as f:
+        raw_prompt = f.read()
+    filled_prompt = raw_prompt.replace("{{CHUNK}}", chunk_text)
+    return dedent(filled_prompt)
 
 def merge_claude_results(json_outputs_dir, output_dir="final_outputs"):
     os.makedirs(output_dir, exist_ok=True)
@@ -176,7 +78,6 @@ def merge_claude_results(json_outputs_dir, output_dir="final_outputs"):
             key_iep[key] += val.strip() + "\n"
     # Path(output_dir, "all_section_headings.json").write_text(json.dumps(sorted(all_headings), indent=2))
     Path(output_dir, "key_iep_sections.json").write_text(json.dumps(key_iep, indent=2))
-
 
 def merge_student_profiles(json_outputs_dir, student_id="xxxx", output_path="final_outputs/student_profile.json"):
     """
@@ -282,7 +183,7 @@ def merge_student_profiles(json_outputs_dir, student_id="xxxx", output_path="fin
 # 2. feed claude extracted output, chunk by chunk
 # 3. claude generates json partial student profile from each chunk
 # 4. merge all partial student json profiles into a final student profile
-def extract_psychological_report(path_to_report="reports/SLD Report.pdf"):
+def extract_psychological_report(path_to_report):
     chunks = prepare_claude_chunks(path_to_report)
     print(f"There are {len(chunks)} chunks found in this report")
     with open("pypdf.txt", "w", encoding="utf-8") as f:
@@ -292,7 +193,7 @@ def extract_psychological_report(path_to_report="reports/SLD Report.pdf"):
     os.makedirs("claude_outputs", exist_ok=True)
     for i, chunk in enumerate(chunks):
         print(f"Processing chunk {i+1}/{len(chunks)}")
-        prompt = CLAUDE_PROMPT_TEMPLATE.replace("{{CHUNK}}", chunk)
+        prompt = load_prompt_with_chunk("prompts/claude3.5_psych_prompt.txt", chunk)
         try:
             response = call_bedrock(prompt)
             # print(f"RAW RESPONSE for chunk {i+1}:\n{response[:500]}\n")
@@ -309,4 +210,5 @@ def extract_psychological_report(path_to_report="reports/SLD Report.pdf"):
     student_id = str(uuid.uuid4())
     merge_student_profiles("claude_outputs", student_id=student_id, output_path=f"final_outputs/{student_id}_student_profile.json")
 
-# extract_psychological_report()
+if __name__ == "__main__":
+    extract_psychological_report("data/SLD Report.pdf")
