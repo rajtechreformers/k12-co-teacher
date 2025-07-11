@@ -110,13 +110,13 @@ def merge_student_profile_partials(partials):
             merged["placement"] = placement
     return merged
 
-if __name__ == "__main__":
-    input_pdf = "data/IEP_Redacted_Lawrence.pdf"
-    output_dir = "images"
 
+def extract_student_info_from_iep(input_path):
     # 1. convert PDF to image pages bc claude doesn't take pdfs
     # 2. run claude on each image (page)
     # 3. merge all outputs (removing dupes) and save to file
+    input_pdf = input_path
+    output_dir = "images"
     image_paths = convert_pdf_to_images(input_pdf, output_dir=output_dir)
     print(f"Converted {len(image_paths)} pages to images.")
     all_outputs = []
@@ -134,3 +134,7 @@ if __name__ == "__main__":
     merged_profile = merge_student_profile_partials(all_outputs)
     with open("merged_iep_profile.json", "w", encoding="utf-8") as f:
         json.dump(merged_profile, f, indent=2, ensure_ascii=False)
+
+if __name__ == "__main__":
+    input_pdf = "data/IEP_Redacted_Lawrence.pdf"
+    extract_student_info_from_iep(input_pdf)
