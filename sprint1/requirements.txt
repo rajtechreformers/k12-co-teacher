@@ -1,0 +1,6 @@
+PyMuPDF
+boto3
+python-docx
+docx2pdf
+streamlit
+weasyprint
