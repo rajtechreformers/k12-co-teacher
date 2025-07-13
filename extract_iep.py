@@ -1,7 +1,7 @@
 from textwrap import dedent
 from pdf2image import convert_from_path
 from collections import defaultdict
-import os, json, boto3, base64
+import os, json, boto3, base64, uuid
 
 def load_prompt(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -76,7 +76,7 @@ def merge_student_profile_partials(partials):
     return merged
 
 
-def extract_student_info_from_iep(input_path):
+def extract_student_info_from_iep(input_path, student_id):
     # 1. convert PDF to image pages bc claude doesn't take pdfs
     # 2. run claude on each image (page)
     # 3. merge all outputs (removing dupes) and save to file
@@ -97,9 +97,10 @@ def extract_student_info_from_iep(input_path):
             print("Raw output:", result)
 
     merged_profile = merge_student_profile_partials(all_outputs)
-    with open("merged_iep_profile.json", "w", encoding="utf-8") as f:
+    with open(f"{student_id}/{student_id}_merged_iep_profile.json", "w", encoding="utf-8") as f:
         json.dump(merged_profile, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
     input_pdf = "data/IEP_Redacted_Johansson.pdf"
-    extract_student_info_from_iep(input_pdf)
+    student_id = str(uuid.uuid4())
+    extract_student_info_from_iep(input_pdf, student_id)

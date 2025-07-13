@@ -183,7 +183,7 @@ def merge_student_profiles(json_outputs_dir, student_id="xxxx", output_path="fin
 # 2. feed claude extracted output, chunk by chunk
 # 3. claude generates json partial student profile from each chunk
 # 4. merge all partial student json profiles into a final student profile
-def extract_psychological_report(path_to_report):
+def extract_psychological_report(path_to_report, student_id):
     chunks = prepare_claude_chunks(path_to_report)
     print(f"There are {len(chunks)} chunks found in this report")
     with open("pypdf.txt", "w", encoding="utf-8") as f:
@@ -206,9 +206,8 @@ def extract_psychological_report(path_to_report):
         except Exception as e:
             print(f"Error on chunk {i+1}:", e)
     # merge_claude_results("claude_outputs", output_dir="final_outputs")
-
-    student_id = str(uuid.uuid4())
-    merge_student_profiles("claude_outputs", student_id=student_id, output_path=f"final_outputs/{student_id}_student_profile.json")
+    merge_student_profiles("claude_outputs", student_id=student_id, output_path=f"{student_id}/{student_id}_student_profile.json")
 
 if __name__ == "__main__":
-    extract_psychological_report("data/SLD Report.pdf")
+    student_id = str(uuid.uuid4())
+    extract_psychological_report("data/SLD Report.pdf", student_id)
