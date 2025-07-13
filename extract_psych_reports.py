@@ -57,7 +57,7 @@ def prepare_claude_chunks(pdf_path, pages_per_chunk=5):
             chunk_text += f"\n---\nPage {page_num}:\n{text.strip()}\n"
             if page_num in image_pages:
                 chunk_text += f"\n[Image Placeholder: Page {page_num} contains a diagram, table, or visual.]\n"
-        print(chunk_text)
+        # print(chunk_text)
         chunks.append(dedent(chunk_text.strip()))
     return chunks
 
@@ -186,11 +186,12 @@ def merge_student_profiles(json_outputs_dir, student_id="xxxx", output_path="fin
 def extract_psychological_report(path_to_report, student_id):
     chunks = prepare_claude_chunks(path_to_report)
     print(f"There are {len(chunks)} chunks found in this report")
-    with open("pypdf.txt", "w", encoding="utf-8") as f:
+    os.makedirs(student_id, exist_ok=True)
+    with open(f"{student_id}/psych_report.txt", "w", encoding="utf-8") as f:
         for i, chunk in enumerate(chunks):
             f.write(chunk)
 
-    os.makedirs("claude_outputs", exist_ok=True)
+    os.makedirs(f"{student_id}/claude_outputs", exist_ok=True)
     for i, chunk in enumerate(chunks):
         print(f"Processing chunk {i+1}/{len(chunks)}")
         prompt = load_prompt_with_chunk("prompts/claude3.5_psych_prompt.txt", chunk)
@@ -200,12 +201,11 @@ def extract_psychological_report(path_to_report, student_id):
             json_start = response.find('{')
             json_end = response.rfind('}') + 1
             parsed = json.loads(response[json_start:json_end])
-            with open(f"claude_outputs/chunk_{i+1:02d}.json", "w") as f:
+            with open(f"{student_id}/claude_outputs/chunk_{i+1:02d}.json", "w") as f:
                 json.dump(parsed, f, indent=2)
             print(f"Chunk {i+1} saved.") 
         except Exception as e:
             print(f"Error on chunk {i+1}:", e)
-    # merge_claude_results("claude_outputs", output_dir="final_outputs")
     merge_student_profiles("claude_outputs", student_id=student_id, output_path=f"{student_id}/{student_id}_student_profile.json")
 
 if __name__ == "__main__":

@@ -81,7 +81,7 @@ def extract_student_info_from_iep(input_path, student_id):
     # 2. run claude on each image (page)
     # 3. merge all outputs (removing dupes) and save to file
     input_pdf = input_path
-    output_dir = "images"
+    output_dir = f"{student_id}/images"
     image_paths = convert_pdf_to_images(input_pdf, output_dir=output_dir)
     print(f"Converted {len(image_paths)} pages to images.")
     all_outputs = []
