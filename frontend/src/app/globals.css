@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f6f8;       /* Soft gray canvas-like background */
+  --foreground: #1e1e1e;       /* Dark gray text for accessibility */
+  --primary-accent: #2c7be5;   /* Canvas-style blue accent */
+  --card-bg: #ffffff;          /* White for class cards or panels */
+  --border-color: #d0d7de;     /* Light border for separation */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans); /* Optional: update to 'Roboto' or 'Inter' */
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #f6f1f1;
+    --foreground: #1b1b1b;
+    --card-bg: #2a2a2a;
+    --border-color: #444;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
