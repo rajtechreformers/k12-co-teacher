@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ConfigureAmplifyClientSide from "@/app/amplify-cognito-config";
+import AuthNavButton from "@/components/AuthNavButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,13 +29,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f9f9f9] text-[#1e1e1e]`}
       >
+        <ConfigureAmplifyClientSide />
         {/* Top Navigation Bar */}
         <header className="bg-white shadow sticky top-0 z-50">
           <div className="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
             <h1 className="text-xl font-bold tracking-tight text-blue-600">
               K12-CoTeacher
             </h1>
-            <nav className="space-x-6 text-sm font-medium"></nav>
+            <nav className="space-x-6 text-sm font-medium">
+              <AuthNavButton />
+            </nav>
           </div>
         </header>
 
