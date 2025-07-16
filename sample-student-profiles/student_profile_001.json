@@ -1,0 +1,85 @@
+{
+  "first_name": "MARIA",
+  "last_name": "GONZALEZ",
+  "studentID": "001mx",
+  "date_of_birth": "2010-07-22",
+  "age": 14,
+  "grade_level": 8,
+  "gender": "Female",
+  "primary_language": "Spanish",
+  "ethnicity": "Hispanic/Latino",
+  "iep_goals": [
+    "Read grade-level text with 85% accuracy and demonstrate comprehension through written responses in 4 out of 5 trials",
+    "Complete multi-step math problems involving fractions and decimals with 70% accuracy in 3 out of 4 trials",
+    "Develop emotional regulation strategies through counseling sessions with 85% success rate",
+    "Independently organize materials and assignments using visual schedules with 90% success rate",
+    "Produce /s/ and /z/ sounds in conversational speech with 75% accuracy across 5 conversation exchanges",
+    "Use appropriate volume and tone during classroom discussions in 8 out of 10 opportunities"
+  ],
+  "accommodations": [
+    "Extended time (1.5x) for assignments and assessments (Across all instructional environments)",
+    "Preferential seating-away from distractions (Across all instructional environments)",
+    "Frequent breaks during instruction (GEN ED/SSC)",
+    "Use of graphic organizers for writing tasks (GEN ED/SSC)",
+    "Simplified and shortened assignments when appropriate (GEN ED/SSC)",
+    "Modified ELA testing with extended time",
+    "Modified Math testing with calculator permitted",
+    "Testing accommodations for Science and Social Studies",
+    "access to bilingual dictionary and translation tools",
+    "small group instruction three times a week for 45 minutes",
+    "visual supports for vocabulary development",
+    "peer buddy system for social interactions"
+  ],
+  "learning_styles": [
+    "learns best through visual demonstrations",
+    "benefits from hands-on activities",
+    "needs frequent positive reinforcement",
+    "works well in structured, predictable environments"
+  ],
+  "disabilities": [
+    {
+      "type": "specific_learning_disability",
+      "name": "language processing disorder"
+    },
+    {
+      "type": "specific_learning_disability",
+      "name": "dyscalculia"
+    },
+    {
+      "type": "emotional_disturbance",
+      "name": "anxiety disorder"
+    },
+    {
+      "type": "speech_language_impairment",
+      "name": "articulation disorder"
+    }
+  ],
+  "services": [
+    {
+      "type": "Specialized Academic Instruction",
+      "frequency": "45 min weekly",
+      "start_date": "2025-03-15",
+      "end_date": "2026-03-15"
+    },
+    {
+      "type": "Individual counseling",
+      "frequency": "30 min weekly",
+      "start_date": "2024-09-01",
+      "end_date": "2025-09-01"
+    },
+    {
+      "type": "Speech Language Therapy",
+      "frequency": "20 min twice weekly",
+      "start_date": "2025-03-15",
+      "end_date": "2026-03-15"
+    }
+  ],
+  "placement": "85% time in regular class & extracurricular & non academic activities, 15% time outside regular class",
+  "interviews": {
+    "parent": "Parent reported student is bilingual (Spanish/English) and experiences anxiety in new situations. Lives with mother and two younger siblings.",
+    "teacher": "Student shows strong effort but struggles with reading comprehension and math concepts. Benefits from visual supports and peer interaction."
+  },
+  "observations": {
+    "psychologist": "Student demonstrates appropriate social skills but shows signs of test anxiety. Responds well to encouragement and structured activities."
+  }
+}

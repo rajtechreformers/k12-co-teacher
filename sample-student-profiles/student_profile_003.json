@@ -1,0 +1,81 @@
+{
+  "first_name": "AISHA",
+  "last_name": "PATEL",
+  "studentID": "003ap",
+  "date_of_birth": "2007-12-03",
+  "age": 17,
+  "grade_level": 11,
+  "gender": "Female",
+  "primary_language": "English",
+  "ethnicity": "Asian/Indian",
+  "iep_goals": [
+    "Navigate school environment independently using mobility aids with 90% success rate",
+    "Complete assignments using assistive technology with 85% accuracy in 4 out of 5 trials",
+    "Demonstrate grade-level math skills through alternative assessment methods with 80% accuracy",
+    "Participate in physical education activities with appropriate modifications in 4 out of 5 opportunities",
+    "Develop self-advocacy skills by requesting needed accommodations with 75% success rate",
+    "Maintain organization of materials and assignments with minimal prompting in 8 out of 10 opportunities"
+  ],
+  "accommodations": [
+    "Large print materials and high contrast displays (Across all instructional environments)",
+    "Preferential seating-front of classroom with good lighting (Across all instructional environments)",
+    "Extended time for all assignments and assessments (GEN ED/SSC)",
+    "Use of assistive technology including screen reader (GEN ED/SSC)",
+    "Alternative format for visual materials (GEN ED/SSC)",
+    "Modified ELA testing with audio format",
+    "Modified Math testing with tactile materials",
+    "Testing accommodations for all subjects",
+    "access to magnification devices",
+    "orientation and mobility training weekly",
+    "braille instruction as needed",
+    "adaptive physical education support"
+  ],
+  "learning_styles": [
+    "learns effectively through auditory instruction",
+    "benefits from tactile and hands-on experiences",
+    "excels with verbal explanations and discussions",
+    "needs consistent organizational systems"
+  ],
+  "disabilities": [
+    {
+      "type": "visual_impairment",
+      "name": "low vision"
+    },
+    {
+      "type": "specific_learning_disability",
+      "name": "processing speed deficits"
+    },
+    {
+      "type": "orthopedic_impairment",
+      "name": "mobility impairment"
+    }
+  ],
+  "services": [
+    {
+      "type": "Vision Services",
+      "frequency": "60 min weekly",
+      "start_date": "2024-10-01",
+      "end_date": "2025-10-01"
+    },
+    {
+      "type": "Orientation and Mobility",
+      "frequency": "30 min weekly",
+      "start_date": "2024-10-01",
+      "end_date": "2025-10-01"
+    },
+    {
+      "type": "Assistive Technology Support",
+      "frequency": "45 min monthly",
+      "start_date": "2024-10-01",
+      "end_date": "2025-10-01"
+    }
+  ],
+  "placement": "95% time in regular class & extracurricular & non academic activities, 5% time outside regular class",
+  "interviews": {
+    "parent": "Parent reported student was born with low vision and uses mobility aids. Very independent and academically motivated. Lives with parents and grandmother.",
+    "teacher": "Student is highly motivated and participates actively in class. Uses assistive technology effectively and advocates for her needs."
+  },
+  "observations": {
+    "psychologist": "Student demonstrates strong problem-solving skills and resilience. Shows excellent adaptation to visual impairment with appropriate supports in place."
+  }
+}
