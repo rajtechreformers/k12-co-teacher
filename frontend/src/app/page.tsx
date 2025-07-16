@@ -1,30 +1,24 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getCurrentUser } from "@aws-amplify/auth";
-import { useRouter } from "next/navigation";
-import DashboardPage from "./dashboard/page";
 
-// TODO: getCurrentUser() needs to be fixed
+import { useAuth } from "react-oidc-context";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 export default function Home() {
+  const auth = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await getCurrentUser();
-        // logged in, show dashboard
-        setLoading(false);
-      } catch {
-        router.push("/login");
-      }
-    };
-    checkAuth();
-  }, [router]);
-  if (loading) return <p>Loading...</p>;
+    if (auth.isAuthenticated) {
+      router.push('/dashboard');
+    } else if (!auth.isLoading) {
+      router.push('/login');
+    }
+  }, [auth.isAuthenticated, auth.isLoading, router]);
+
   return (
-    <main>
-      <DashboardPage />;
-    </main>
+    <div className="flex items-center justify-center min-h-screen">
+      <p>Loading...</p>
+    </div>
   );
 }

@@ -1,49 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ConfigureAmplifyClientSide from "@/app/amplify-cognito-config";
-import AuthNavButton from "@/components/AuthNavButton";
+import AuthProviderWrapper from "../components/AuthProviderWrapper";
+import { Inter } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter'
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "K12-CoTeacher",
-  description: "Assistant for tailored lesson plans",
+export const metadata = {
+  title: "K12 Co-Teacher Dashboard",
+  description: "Modern Teacher Dashboard with Beautiful UI",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f9f9f9] text-[#1e1e1e]`}
-      >
-        <ConfigureAmplifyClientSide />
-        {/* Top Navigation Bar */}
-        <header className="bg-white shadow sticky top-0 z-50">
-          <div className="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 className="text-xl font-bold tracking-tight text-blue-600">
-              K12-CoTeacher
-            </h1>
-            <nav className="space-x-6 text-sm font-medium">
-              <AuthNavButton />
-            </nav>
-          </div>
-        </header>
-
-        {/* Main content area */}
-        <main className="max-w-screen-xl mx-auto px-6 py-10">{children}</main>
+    <html lang="en" className={inter.variable}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className={`${inter.className} antialiased`}>
+        <AuthProviderWrapper>{children}</AuthProviderWrapper>
       </body>
     </html>
   );
