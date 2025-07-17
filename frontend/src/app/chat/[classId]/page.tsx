@@ -311,7 +311,7 @@ export default function ChatPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
       {/* Left Sidebar - Recent Chats */}
-      <div className="w-80 bg-white/90 backdrop-blur-xl border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white/90 backdrop-blur-xl border-r border-gray-200 flex flex-col h-screen">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3 mb-4">
             <Button
@@ -346,7 +346,7 @@ export default function ChatPage() {
           </motion.div>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-200px)]">
+        <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-180px)]">
           <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
             <MessageSquare className="h-4 w-4 mr-2" />
             All Chat History
@@ -386,7 +386,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-screen">
         {/* Chat Header */}
         <div className="bg-white/90 backdrop-blur-xl border-b border-gray-200 p-4">
           <div className="flex items-center justify-between">
@@ -412,38 +412,74 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && (
-            <div className="flex justify-center items-center h-full">
-              <p className="text-gray-400 text-lg">Welcome to a new chat, feel free to ask for tips on improving the lesson plan for the day!</p>
-            </div>
-          )}
-          {messages.map((msg, index) => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              className={`flex ${msg.isTeacher ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex items-start space-x-3 ${
-                msg.isTeacher 
-                  ? 'max-w-xs lg:max-w-md flex-row-reverse space-x-reverse' 
-                  : 'max-w-2xl lg:max-w-4xl w-full'
-              }`}>
-                <div className={`p-2 rounded-full flex-shrink-0 ${msg.isTeacher ? 'bg-gradient-to-br from-blue-500 to-purple-600' : 'bg-gray-300'}`}>
-                  {msg.isTeacher ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-gray-600" />}
-                </div>
-                <div className={`rounded-2xl p-4 ${
+        {/* Messages Area - Fixed height container */}
+        <div className="flex-1 overflow-hidden flex flex-col max-h-[calc(100vh-180px)]">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {messages.length === 0 && (
+              <div className="flex justify-center items-center h-full">
+                <p className="text-gray-400 text-lg">Welcome to a new chat, feel free to ask for tips on improving the lesson plan for the day!</p>
+              </div>
+            )}
+            {messages.map((msg, index) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className={`flex ${msg.isTeacher ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`flex items-start space-x-3 ${
                   msg.isTeacher 
-                    ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white' 
-                    : 'bg-white shadow-md text-black border border-gray-200'
+                    ? 'max-w-xs lg:max-w-md flex-row-reverse space-x-reverse' 
+                    : 'max-w-2xl lg:max-w-4xl w-full'
                 }`}>
-                  {!msg.isTeacher && <p className="text-sm font-medium mb-2 text-gray-700">{msg.sender}</p>}
-                  {msg.isTeacher ? (
-                    <p className="text-sm">{msg.message}</p>
-                  ) : (
+                  <div className={`p-2 rounded-full flex-shrink-0 ${msg.isTeacher ? 'bg-gradient-to-br from-blue-500 to-purple-600' : 'bg-gray-300'}`}>
+                    {msg.isTeacher ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-gray-600" />}
+                  </div>
+                  <div className={`rounded-2xl p-4 ${
+                    msg.isTeacher 
+                      ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white' 
+                      : 'bg-white shadow-md text-black border border-gray-200'
+                  }`}>
+                    {!msg.isTeacher && <p className="text-sm font-medium mb-2 text-gray-700">{msg.sender}</p>}
+                    {msg.isTeacher ? (
+                      <p className="text-sm">{msg.message}</p>
+                    ) : (
+                      <div className="text-sm prose prose-sm max-w-none prose-gray">
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                            ul: ({ children }) => <ul className="mb-2 last:mb-0 ml-4 list-disc">{children}</ul>,
+                            ol: ({ children }) => <ol className="mb-2 last:mb-0 ml-4 list-decimal">{children}</ol>,
+                            li: ({ children }) => <li className="mb-1">{children}</li>,
+                            code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
+                            pre: ({ children }) => <pre className="bg-gray-100 p-2 rounded-lg overflow-x-auto text-xs">{children}</pre>,
+                            h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
+                          }}
+                        >
+                          {msg.message}
+                        </ReactMarkdown>
+                      </div>
+                    )}
+                    <p className={`text-xs mt-2 ${msg.isTeacher ? 'text-blue-100' : 'text-gray-500'}`}>{msg.time}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+            {currentAIMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
+                <div className="flex items-start space-x-3 max-w-2xl lg:max-w-4xl w-full">
+                  <div className="p-2 rounded-full bg-gray-300 flex-shrink-0">
+                    <Bot className="h-4 w-4 text-gray-600" />
+                  </div>
+                  <div className="rounded-2xl p-4 bg-white shadow-md text-black border border-gray-200">
+                    <p className="text-sm font-medium mb-2 text-gray-700">AI Assistant</p>
                     <div className="text-sm prose prose-sm max-w-none prose-gray">
                       <ReactMarkdown
                         components={{
@@ -458,49 +494,15 @@ export default function ChatPage() {
                           h3: ({ children }) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
                         }}
                       >
-                        {msg.message}
+                        {currentAIMessage}
                       </ReactMarkdown>
                     </div>
-                  )}
-                  <p className={`text-xs mt-2 ${msg.isTeacher ? 'text-blue-100' : 'text-gray-500'}`}>{msg.time}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-          {currentAIMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-start"
-            >
-              <div className="flex items-start space-x-3 max-w-2xl lg:max-w-4xl w-full">
-                <div className="p-2 rounded-full bg-gray-300 flex-shrink-0">
-                  <Bot className="h-4 w-4 text-gray-600" />
-                </div>
-                <div className="rounded-2xl p-4 bg-white shadow-md text-black border border-gray-200">
-                  <p className="text-sm font-medium mb-2 text-gray-700">AI Assistant</p>
-                  <div className="text-sm prose prose-sm max-w-none prose-gray">
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
-                        ul: ({ children }) => <ul className="mb-2 last:mb-0 ml-4 list-disc">{children}</ul>,
-                        ol: ({ children }) => <ol className="mb-2 last:mb-0 ml-4 list-decimal">{children}</ol>,
-                        li: ({ children }) => <li className="mb-1">{children}</li>,
-                        code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
-                        pre: ({ children }) => <pre className="bg-gray-100 p-2 rounded-lg overflow-x-auto text-xs">{children}</pre>,
-                        h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
-                        h2: ({ children }) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
-                        h3: ({ children }) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
-                      }}
-                    >
-                      {currentAIMessage}
-                    </ReactMarkdown>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
-          <div ref={messagesEndRef} />
+              </motion.div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
 
         {/* Message Input */}
@@ -525,7 +527,7 @@ export default function ChatPage() {
       </div>
 
       {/* Right Sidebar - Student Roster */}
-      <div className="w-80 bg-white/90 backdrop-blur-xl border-l border-gray-200 flex flex-col">
+      <div className="w-80 bg-white/90 backdrop-blur-xl border-l border-gray-200 flex flex-col h-screen">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900 flex items-center">
             <Users className="h-5 w-5 mr-2" />
@@ -534,7 +536,7 @@ export default function ChatPage() {
           <p className="text-sm text-gray-600">{Object.keys(students).length} students</p>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-200px)]">
+        <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-180px)]">
           {loading ? (
             <div className="flex justify-center items-center h-32">
               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
