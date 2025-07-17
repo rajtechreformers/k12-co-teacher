@@ -53,7 +53,8 @@ export default function ChatPage() {
 
   const { isConnected, connect, disconnect, sendMessage } = useWebSocket({
     url: process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws',
-    onMessage: (data) => {
+    // Replace the onMessage handler in your useWebSocket call with this:
+    onMessage: (data: any) => {
       if (data.message) {
         setCurrentAIMessage(prev => prev + data.message);
       }
@@ -141,7 +142,7 @@ export default function ChatPage() {
               const conversationId = item.sortId.split('#')[1];
               
               // Use the type from the API response if available, otherwise infer it
-              const chatType = item.type || 'general';
+              const chatType = (item.type === 'student' ? 'student' : 'general') as 'general' | 'student';
               
               // For student chats, get the student ID from the student_ids array
               const studentIdFromItem = chatType === 'student' && item.student_ids && item.student_ids.length === 1 
@@ -150,11 +151,11 @@ export default function ChatPage() {
               
               return {
                 id: parseInt(item.created_at.toString()),
-                title: item.title || (chatType === 'student' ? `${students[studentIdFromItem] || 'Student'} Chat` : 'General Chat'),
+                title: item.title || (chatType === 'student' ? `${students[studentIdFromItem || ''] || 'Student'} Chat` : 'General Chat'),
                 lastMessage: '', // We don't have this in the response
                 time: formatTimestamp(new Date(item.created_at * 1000)),
                 type: chatType,
-                studentId: studentIdFromItem,
+                studentId: studentIdFromItem ? parseInt(studentIdFromItem) : undefined,
                 conversationId
               };
             });
@@ -231,7 +232,8 @@ export default function ChatPage() {
       };
       
       // Debug log to verify the payload
-      console.log('Sending payload with conversation_id:', payload.conversation_id);
+      console.log('Sending payload with sessionId:', payload.sessionId);
+
       
       sendMessage(payload);
       setMessage("");
@@ -277,7 +279,7 @@ export default function ChatPage() {
           // Set session ID after loading messages to avoid WebSocket issues
           // Use setTimeout to ensure the UI has time to update
           setTimeout(() => {
-            setSessionId(chat.conversationId);
+            setSessionId(chat.conversationId || null);
             setMessages(formattedMessages);
           }, 0);
         }
@@ -425,20 +427,42 @@ export default function ChatPage() {
               transition={{ duration: 0.3, delay: index * 0.1 }}
               className={`flex ${msg.isTeacher ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex items-start space-x-3 max-w-xs lg:max-w-md ${msg.isTeacher ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                <div className={`p-2 rounded-full ${msg.isTeacher ? 'bg-gradient-to-br from-blue-500 to-purple-600' : 'bg-gray-300'}`}>
+              <div className={`flex items-start space-x-3 ${
+                msg.isTeacher 
+                  ? 'max-w-xs lg:max-w-md flex-row-reverse space-x-reverse' 
+                  : 'max-w-2xl lg:max-w-4xl w-full'
+              }`}>
+                <div className={`p-2 rounded-full flex-shrink-0 ${msg.isTeacher ? 'bg-gradient-to-br from-blue-500 to-purple-600' : 'bg-gray-300'}`}>
                   {msg.isTeacher ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-gray-600" />}
                 </div>
-                <div className={`rounded-2xl p-3 ${msg.isTeacher ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white' : 'bg-white shadow-md text-black'}`}>
-                  {!msg.isTeacher && <p className="text-sm font-medium mb-1">{msg.sender}</p>}
+                <div className={`rounded-2xl p-4 ${
+                  msg.isTeacher 
+                    ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white' 
+                    : 'bg-white shadow-md text-black border border-gray-200'
+                }`}>
+                  {!msg.isTeacher && <p className="text-sm font-medium mb-2 text-gray-700">{msg.sender}</p>}
                   {msg.isTeacher ? (
                     <p className="text-sm">{msg.message}</p>
                   ) : (
-                    <div className="text-sm prose prose-sm max-w-none">
-                      <ReactMarkdown>{msg.message}</ReactMarkdown>
+                    <div className="text-sm prose prose-sm max-w-none prose-gray">
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                          ul: ({ children }) => <ul className="mb-2 last:mb-0 ml-4 list-disc">{children}</ul>,
+                          ol: ({ children }) => <ol className="mb-2 last:mb-0 ml-4 list-decimal">{children}</ol>,
+                          li: ({ children }) => <li className="mb-1">{children}</li>,
+                          code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
+                          pre: ({ children }) => <pre className="bg-gray-100 p-2 rounded-lg overflow-x-auto text-xs">{children}</pre>,
+                          h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                          h2: ({ children }) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
+                        }}
+                      >
+                        {msg.message}
+                      </ReactMarkdown>
                     </div>
                   )}
-                  <p className={`text-xs mt-1 ${msg.isTeacher ? 'text-blue-100' : 'text-gray-600'}`}>{msg.time}</p>
+                  <p className={`text-xs mt-2 ${msg.isTeacher ? 'text-blue-100' : 'text-gray-500'}`}>{msg.time}</p>
                 </div>
               </div>
             </motion.div>
@@ -449,14 +473,28 @@ export default function ChatPage() {
               animate={{ opacity: 1, y: 0 }}
               className="flex justify-start"
             >
-              <div className="flex items-start space-x-3 max-w-xs lg:max-w-md">
-                <div className="p-2 rounded-full bg-gray-300">
+              <div className="flex items-start space-x-3 max-w-2xl lg:max-w-4xl w-full">
+                <div className="p-2 rounded-full bg-gray-300 flex-shrink-0">
                   <Bot className="h-4 w-4 text-gray-600" />
                 </div>
-                <div className="rounded-2xl p-3 bg-white shadow-md text-black">
-                  <p className="text-sm font-medium mb-1">AI Assistant</p>
-                  <div className="text-sm prose prose-sm max-w-none">
-                    <ReactMarkdown>{currentAIMessage}</ReactMarkdown>
+                <div className="rounded-2xl p-4 bg-white shadow-md text-black border border-gray-200">
+                  <p className="text-sm font-medium mb-2 text-gray-700">AI Assistant</p>
+                  <div className="text-sm prose prose-sm max-w-none prose-gray">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                        ul: ({ children }) => <ul className="mb-2 last:mb-0 ml-4 list-disc">{children}</ul>,
+                        ol: ({ children }) => <ol className="mb-2 last:mb-0 ml-4 list-decimal">{children}</ol>,
+                        li: ({ children }) => <li className="mb-1">{children}</li>,
+                        code: ({ children }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
+                        pre: ({ children }) => <pre className="bg-gray-100 p-2 rounded-lg overflow-x-auto text-xs">{children}</pre>,
+                        h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
+                      }}
+                    >
+                      {currentAIMessage}
+                    </ReactMarkdown>
                   </div>
                 </div>
               </div>

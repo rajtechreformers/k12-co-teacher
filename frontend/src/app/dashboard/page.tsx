@@ -159,7 +159,7 @@ export default function DashboardPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  Welcome back, <span className="text-blue-600 font-semibold">{auth.user?.profile['cognito:username'] || auth.user?.profile.email?.split('@')[0] || 'User'}</span>
+                  Welcome back, <span className="text-blue-600 font-semibold">{`${auth.user?.profile['cognito:username'] || auth.user?.profile.email?.split('@')[0] || 'User'}`}</span>
                 </motion.p>
               </div>
             </div>
