@@ -1,0 +1,47 @@
+{
+    "first_name": "Ethan",
+    "last_name": "Martinez",
+    "studentID": "023em",
+    "date_of_birth": "2010-02-20",
+    "age": 14,
+    "grade_level": 8,
+    "gender": "Male",
+    "primary_language": "English",
+    "ethnicity": "Hispanic/Latino",
+    "iep_goals": [
+      "Increase ability to remain on-task for 20-minute work periods in 4 out of 5 trials",
+      "Follow 3-step oral directions without prompts in 8 out of 10 opportunities"
+    ],
+    "accommodations": [
+      "Movement breaks every 30 minutes",
+      "Use of visual schedule",
+      "Prompting and redirection as needed",
+      "Reduced homework load"
+    ],
+    "learning_styles": [
+      "benefits from hands-on activities",
+      "responds well to visual cues"
+    ],
+    "disabilities": [
+      {
+        "type": "other_health_impairment",
+        "name": "attention deficit hyperactivity disorder (adhd)"
+      }
+    ],
+    "services": [
+      {
+        "type": "Behavioral Support Services",
+        "frequency": "30 min weekly",
+        "start_date": "2024-08-20",
+        "end_date": "2025-08-20"
+      }
+    ],
+    "placement": "95% regular class, 5% support services",
+    "interviews": {
+      "parent": "Parent reports Ethan is energetic and curious, but has trouble focusing on independent tasks.",
+      "teacher": "Ethan excels in group projects but struggles with sustained attention in lectures."
+    },
+    "observations": {
+      "psychologist": "Displays average intellectual functioning with attention regulation challenges."
+    }
+}
