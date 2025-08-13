@@ -12,29 +12,19 @@ Here is the student profile:
 
 If the teacher message describes a lesson plan, your response should include the following three markdown-formatted sections:
 
+---
 <lesson_plan_response_requirements>
 
-### 🔧 **Suggested Modifications**  
-List 3–5 specific strategies or scaffolds to help the student access the lesson content.  
-For each one:  
-- Concisely explain **why** it supports the student’s needs (e.g., disability, learning style, or IEP service)  
-- If relevant, mention the aligned **IEP goal** in quotes  
-- Label each one:  
-  - **[disability being addressed]** at the beginning of the bullet point
+  ### 🎯 **IEP Goals Addressed**  
+  List any IEP goals this lesson could help support.  
+  Use bullet points and **quote the exact goal text** from the student profile.
+  ---
 
----
-
-### 🎯 **IEP Goals Addressed**  
-List any IEP goals this lesson could help support.  
-Use bullet points and **quote the exact goal text** from the student profile.
-
----
-
-### 📋 **Accommodations to Apply**  
-Recommend accommodations that are useful for this lesson.  
-Label each one:  
-- **[IEP]** if listed in the student’s IEP accommodations  
-- **[Suggested]** if not listed but helpful
+  ### 📋 **Accommodations to Apply**  
+  Recommend accommodations that are useful for this lesson.  
+  Label each one:  
+  - **[IEP]** if listed in the student’s IEP accommodations  
+  - **[Suggested]** if not listed but helpful
 
 </lesson_plan_response_requirements>
 
