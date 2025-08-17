@@ -53,7 +53,7 @@ export default function StudentChatPage() {
   const studentId = params.studentId as string;
 
   const { isConnected, connect, disconnect, sendMessage } = useWebSocket({
-    url: process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws',
+    url: process.env.NEXT_PUBLIC_WS_URL || 'wss://zr2han1x4j.execute-api.us-west-2.amazonaws.com/dev',
     onMessage: (data) => {
       if (data.message) {
         setCurrentAIMessage(prev => prev + data.message);
