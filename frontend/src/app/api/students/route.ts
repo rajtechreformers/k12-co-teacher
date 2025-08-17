@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_ENDPOINT = process.env.STUDENTS_API_ENDPOINT || 'YOUR_STUDENTS_API_ENDPOINT_HERE';
+const API_ENDPOINT = process.env.STUDENTS_API_ENDPOINT || 'https://6ll9oei3u3.execute-api.us-west-2.amazonaws.com/dev/getStudentsForClass';
 
 export async function POST(request: NextRequest) {
   try {

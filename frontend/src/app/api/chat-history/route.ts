@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Call the REST API endpoint
-    const apiUrl = process.env.NEXT_PUBLIC_CHAT_HISTORY_API || 'https://api.example.com/chat-history';
+    const apiUrl = process.env.NEXT_PUBLIC_CHAT_HISTORY_API || 'https://6ll9oei3u3.execute-api.us-west-2.amazonaws.com/dev/getHistory';
     
     const response = await fetch(apiUrl, {
       method: 'POST',
