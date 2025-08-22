@@ -16,8 +16,6 @@ In K-12 classrooms, teachers are responsible for meeting the diverse needs of al
 - [How to build and deploy the solution](#how-to-build-and-deploy-the-solution)
   - [Configuration](#configuration)
   - [Build and deploy](#build-and-deploy)
-- [File structure](#file-structure)
-
 ---
 
 ## Collaboration
@@ -135,6 +133,11 @@ The solution deploys the following components:
 
 ## Prerequisites
 
+### DynamoDB Data Initialization:  
+  - The chatbot requires base data in DynamoDB tables (`Student Profiles`, `Classes → Students`, `Class Attributes`, `Teachers → Classes`).  
+  - A sample script, **`sample_data/add_to_dynamo.py`**, is provided to automatically seed DynamoDB with example data.  
+  - Alternatively, you can load your own student/class data into the tables before using the chatbot.  
+
 ### Build environment specifications
 
 - To build and deploy this solution. . .
@@ -148,7 +151,7 @@ The solution deploys the following components:
 - [Docker](https://docs.docker.com/get-docker/)
 
 
-### 1- Bedrock model persmissions
+### Bedrock model persmissions
 
 ```markdown
 ### Enable Bedrock Model Access
@@ -163,12 +166,7 @@ The solution deploys the following components:
 
    - Click on "Edit" button in top right
    - Select the required models (Check config.yaml file):
-     -us.meta.llama3-3-70b-instruct-v1:0
-     -us.amazon.nova-pro-v1:0
-     -us.anthropic.claude-3-5-sonnet-20241022-v2:0
      -us.anthropic.claude-3-7-sonnet-20250219-v1:0
-     -cohere.rerank-v3-5:0
-     -amazon.titan-embed-text-v2:0
    - Click "Save changes"
    - Wait for access approval (usually immediate)
 
