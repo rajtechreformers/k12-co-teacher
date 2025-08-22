@@ -52,9 +52,7 @@ Thanks for your interest in our solution. Having specific examples of replicatio
 
 **All work produced is open source. More information can be found in the GitHub repo.**
 
-## Authors and Acknowledgements
-
-### Modified by:
+## Authors
 
 - Noor Dhaliwal - rdhali07@calpoly.edu
 - Sharon Liang - sliang19@calpoly.edu
@@ -70,7 +68,27 @@ or in the "license" file accompanying this file. This file is distributed on an 
 
 ## Key Features
 
-1 . . .
+1. Authentication & Frontend Integration
+   
+   - Authentication/authorization with **Amazon Cognito**, integrated into a **React** frontend via **AWS Amplify**.
+     
+2. Student & Class Data Management
+   
+   - **REST API** (API Gateway → Lambda) retrieves **student profiles**, **classes**, and **rosters** from **DynamoDB**.
+   - DynamoDB tables include: **Chat History**, **Classes → Students**, **Class Attributes**, **Teachers → Classes**, **Student Profiles**.
+    
+3. Conversational AI, Tool Calling & Chat Modes
+
+   - **Real-time chat** over **WebSocket API** with **Amazon Bedrock** foundation models.
+   - **Two chat modes:**
+     - **Student Chat:** scoped to a single student; retrieval/tool calls restricted to that student’s profile & history.
+     - **Class Chat:** class-wide conversation; references all student profiles (aggregations/summaries) without exposing restricted fields.
+   - **Tool calling:** the chatbot triggers **`editStudentProfile` Lambda** to update studnet profiles in **DynamoDB** when prompted.
+   - **History & grounding:** chat sessions persist in **DynamoDB**; on resume, Lambda loads prior chat history and class context to ground responses.
+     
+4. Scalable & Serverless Architecture
+   
+   - Fully **serverless**: **AWS Lambda**, **API Gateway**, **DynamoDB**, **Amazon Bedrock**.
 
 ## Architecture overview
 
@@ -80,12 +98,40 @@ The following diagram represents the solution's architecture design.
 
 ![Diagram](docs/solution_architecture_diagram.png)
 
-### Solution components
+## Solution Components
 
+The solution deploys the following components:
 
-- **Amazon Bedrock**: Provides access to:
-  - Foundation Models for text generation
+- **AWS Amplify Frontend**: Hosts the React-based web application for educators to interact with the chatbot. Integrated with **Amazon Cognito** for secure authentication and session management.
 
+- **Amazon Cognito**: Provides user authentication and authorization through a **Cognito User Pool**. Issues JWT tokens that are used by the frontend to access protected APIs via API Gateway.
+
+- **Amazon API Gateway**:  
+  - **REST API**: Exposes endpoints to retrieve student profiles, classes, and rosters via Lambda functions.  
+  - **WebSocket API**: Maintains real-time, bidirectional communication between the chatbot UI and the inference engine.
+
+- **AWS Lambda Functions**:  
+  - **`getClassesForDashboard`**: Retrieves class lists and attributes for educator dashboards.  
+  - **`getStudentsForClass`**: Fetches the list of students enrolled in a specific class.  
+  - **`getStudentProfile`**: Retrieves detailed student profile data.  
+  - **`getChatHistory`**: Loads prior chat history for continuity when resuming conversations.  
+  - **`inference`**: Handles user queries, interacts with Amazon Bedrock for responses, and manages tool calls.  
+  - **`editStudentProfile`**: Updates student records in DynamoDB when triggered by tool calls (e.g., educator requests).  
+
+- **Amazon DynamoDB**: Stores all application data, including:  
+  - **Chat History**: Persists conversation history across sessions.  
+  - **Classes → Students**: Maps classes to their enrolled students.  
+  - **Class Attributes**: Stores metadata about classes.  
+  - **Teachers → Classes**: Maps educators to their classes.  
+  - **Student Profiles**: Holds individual student records and attributes.  
+
+- **Amazon Bedrock**: Provides access to foundation models for **real-time conversational AI**. Supports tool calling, enabling the chatbot to trigger Lambda functions for profile updates. Uses context from DynamoDB (chat history, class/student data) for context-aware responses.  
+
+- **Chat Modes**:  
+  - **Student Chat**: Scoped to a single student; retrieval and tool calls restricted to that student’s profile and history.  
+  - **Class Chat**: Class-wide conversation; references all student profiles in a class (aggregations/summaries) without exposing sensitive details.  
+
+- **Security & Scalability**: Fully serverless architecture with IAM roles, Cognito authentication, and DynamoDB encryption at rest. Automatically scales with demand while minimizing operational overhead.
 
 ## Prerequisites
 
