@@ -78,7 +78,7 @@ or in the "license" file accompanying this file. This file is distributed on an 
 
 The following diagram represents the solution's architecture design.
 
-![Diagram](docs/images/solution_architecture_diagram.png)
+![Diagram](docs/solution_architecture_diagram.png)
 
 ### Solution components
 
