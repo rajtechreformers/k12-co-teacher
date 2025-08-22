@@ -129,8 +129,6 @@ The solution deploys the following components:
   - **Student Chat**: Scoped to a single student; retrieval and tool calls restricted to that student’s profile and history.  
   - **Class Chat**: Class-wide conversation; references all student profiles in a class (aggregations/summaries) without exposing sensitive details.  
 
-- **Security & Scalability**: Fully serverless architecture with IAM roles, Cognito authentication, and DynamoDB encryption at rest. Automatically scales with demand while minimizing operational overhead.
-
 ## Prerequisites
 
 ### DynamoDB Data Initialization:  
