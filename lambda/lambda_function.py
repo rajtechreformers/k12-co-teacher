@@ -103,7 +103,7 @@ def lambda_handler(event, context):
             system_prompt = load_prompt_template("prompts/3_7_prompt_student_chat.txt", {
                 "STUDENT_PROFILE": formatted_profile
             })
-            
+            print(system_prompt)
             
         elif chat_type == "general":
             print("general chat")
@@ -272,15 +272,16 @@ def lambda_handler(event, context):
             print(f"Error saving assistant message: {e}")
 
         # Generate title
-        try:
-            title_prompt = load_prompt_template("prompts/3_5_prompt_generate_title.txt", {
-                    "BODY": body
-                })
-            title = call_bedrock(title_prompt)
-            print(f"Title: {title}")
-            update_conversation_title(teacher_id, session_id, title)
-        except Exception as e:
-            print(f"Error generating title: {e}")
+        if not get_conversation_title(teacher_id, session_id):
+            try:
+                title_prompt = load_prompt_template("prompts/3_5_prompt_generate_title.txt", {
+                        "BODY": body
+                    })
+                title = call_bedrock(title_prompt)
+                print(f"Title: {title}")
+                update_conversation_title(teacher_id, session_id, title)
+            except Exception as e:
+                print(f"Error generating title: {e}")
 
         try:
             apigw_client.post_to_connection(
