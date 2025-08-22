@@ -131,10 +131,33 @@ The solution deploys the following components:
 
 ## Prerequisites
 
+### AWS Account
+
+- **Access to Amazon Bedrock foundation models**: Access to Amazon Bedrock foundation models isn't granted by default. In order to gain access to a foundation model, an IAM user with sufficient permissions needs to request access to it through the console. Once access is provided to a model, it is available for all users in the account. To manage model access, sign into the [Amazon Bedrock console](https://console.aws.amazon.com/bedrock/). Then select Model access at the bottom of the left navigation pane.
+  
+- AWS Services enabled: We need following services in this solution, So please make sure these services are enabled in your account
+```
+-   AWS Amplify
+-   Amazon API Gateway
+-   Amazon Bedrock
+-   Amazon CloudFront
+-   Amazon Cognito
+-   Amazon DynamoDB
+-   AWS Lambda
+```
+- **IAM Role Permissions (per Lambda)**: Each Lambda requires access to specific DynamoDB tables (and Bedrock, for inference).
+  - **getClassesForDashboard** - read access to **Class Attributes**, **Teachers -> Classes**
+  - **getStudentsForClass** - read access to **Classes -> Students**
+  - **getStudentProfile** - read access to **Student Profiles**
+  - **getChatHistory** - read access to **Chat History**
+  - **editStudentProfile** - read and write access to **Student Profiles**
+  - **Inference Lambda** - read and write access to **Chat History**, **Class Attributes**, **Student Profiles**; **can invoke Bedrock models**; **can post to WebSocket connections**  
+  
 ### DynamoDB Data Initialization:  
   - The chatbot requires base data in DynamoDB tables (`Student Profiles`, `Classes → Students`, `Class Attributes`, `Teachers → Classes`).  
   - A sample script, **`sample_data/add_to_dynamo.py`**, is provided to automatically seed DynamoDB with example data.  
   - Alternatively, you can load your own student/class data into the tables before using the chatbot.  
+
 
 ### Build environment specifications
 
@@ -146,10 +169,8 @@ The solution deploys the following components:
 - The latest version of the [AWS CLI](https://aws.amazon.com/cli/), installed and configured.
 - The latest version of the [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/home.html).
 - [Nodejs](https://docs.npmjs.com/getting-started) version 18 or newer.
-- [Docker](https://docs.docker.com/get-docker/)
 
-
-### Bedrock model persmissions
+### 1- Bedrock model persmissions
 
 ```markdown
 ### Enable Bedrock Model Access
@@ -191,8 +212,6 @@ The solution deploys the following components:
 
 Before you deploy the solution, review the architecture and prerequisites sections in this guide. Follow the step-by-step instructions in this section to configure and deploy the solution into your account.
 
-Time to deploy: approximately 20 minutes
-
 ### Authenticate for AWS deployment
 
 ```bash
@@ -210,7 +229,7 @@ git clone https://github.com/cal-poly-dxhub/k12-co-teacher.git
 Change the directory to code directory
 
 ```bash
- cd k12-co-teacher/
+ cd k12-co-teacher/frontend
 ```
 
 ### Build the code
@@ -219,6 +238,12 @@ Install the dependencies
 
 ```bash
 npm install
+```
+
+### Run Locally
+
+```
+npm run dev
 ```
 
 Deploy the solution
