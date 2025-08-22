@@ -1,0 +1,47 @@
+{
+  "first_name": "Jayden",
+  "last_name": "Williams",
+  "studentID": "027jw",
+  "date_of_birth": "2016-04-08",
+  "age": 8,
+  "grade_level": 2,
+  "gender": "Male",
+  "primary_language": "English",
+  "ethnicity": "African American",
+  "iep_goals": [
+    "Produce clear speech sounds for /r/, /l/, and /th/ in conversational speech with 80% accuracy",
+    "Follow 2-step classroom directions independently in 9 out of 10 trials"
+  ],
+  "accommodations": [
+    "Repeat and rephrase instructions as needed",
+    "Allow extra processing time for verbal responses",
+    "Use visual cues to support verbal instructions",
+    "Preferential seating near teacher"
+  ],
+  "learning_styles": [
+    "benefits from multimodal instruction",
+    "needs additional processing time for language"
+  ],
+  "disabilities": [
+    {
+      "type": "speech_or_language_impairment",
+      "name": "mixed receptive-expressive language disorder"
+    }
+  ],
+  "services": [
+    {
+      "type": "Speech-Language Therapy",
+      "frequency": "30 min, 3x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "95% regular class, 5% speech therapy",
+  "interviews": {
+    "parent": "Parent reports Jayden is social and friendly but sometimes has trouble being understood by others.",
+    "teacher": "Jayden tries hard to participate but often needs clarification of instructions."
+  },
+  "observations": {
+    "psychologist": "Average cognitive functioning with specific deficits in language processing and articulation."
+  }
+}

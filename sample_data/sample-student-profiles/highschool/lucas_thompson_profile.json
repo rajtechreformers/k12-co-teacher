@@ -1,0 +1,47 @@
+{
+  "first_name": "Lucas",
+  "last_name": "Thompson",
+  "studentID": "041lt",
+  "date_of_birth": "2008-02-28",
+  "age": 16,
+  "grade_level": 10,
+  "gender": "Male",
+  "primary_language": "English",
+  "ethnicity": "White",
+  "iep_goals": [
+    "Articulate speech sounds clearly in conversation with 90% intelligibility to unfamiliar listeners",
+    "Use appropriate voice volume and rate during presentations with 85% accuracy"
+  ],
+  "accommodations": [
+    "Allow extra time for verbal responses",
+    "Provide alternative methods for oral presentations",
+    "Access to speech-generating device when needed",
+    "Preferential seating for optimal acoustics"
+  ],
+  "learning_styles": [
+    "excels with written expression over verbal communication",
+    "benefits from technology supports for communication"
+  ],
+  "disabilities": [
+    {
+      "type": "speech_or_language_impairment",
+      "name": "severe stuttering disorder"
+    }
+  ],
+  "services": [
+    {
+      "type": "Speech-Language Therapy",
+      "frequency": "50 min, 2x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "100% regular class with speech support",
+  "interviews": {
+    "parent": "Parent reports Lucas is academically gifted but avoids speaking situations. He wants to study computer science.",
+    "teacher": "Lucas produces excellent written work and demonstrates deep understanding but rarely participates in class discussions."
+  },
+  "observations": {
+    "psychologist": "Above-average intellectual abilities with significant speech fluency challenges impacting academic participation and social interaction."
+  }
+}

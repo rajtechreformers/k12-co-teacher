@@ -1,0 +1,51 @@
+{
+  "student_id": "102e2",
+  "first_name": "STUDENT",
+  "last_name": "LASTNAME",
+  "disabilities": [
+    {
+      "type": "specific_learning_disability",
+      "name": "auditory processing disorder"
+    },
+    {
+      "type": "specific_learning_disability",
+      "name": "visual processing disorder"
+    },
+    {
+      "type": "specific_learning_disability",
+      "name": "dyslexia"
+    },
+    {
+      "type": "specific_learning_disability",
+      "name": "executive functioning deficits"
+    },
+    {
+      "type": "other_health_impairment",
+      "name": "attention hyperactivity disorder (adhd)"
+    }
+  ],
+  "iep_goals": [
+    "Produce /l/ in all positions of words in multiple sentences during 5 conversation exchanges with 80% accuracy",
+    "Produce /th/ in medial position of words in 10 sentences with 80% accuracy",
+    "Produce 10 r-blends in initial position of words in 3 or more word phrases with 80% accuracy"
+  ],
+  "accommodations": [
+    "access to resources and tools (notes, notebook, graphic organizers, text analysis)",
+    "small group intervention four times a week for 30 minutes",
+    "texts read out loud",
+    "visuals and videos for vocabulary and spelling"
+  ],
+  "learning_styles": [
+    "benefits from talking through ideas",
+    "performs well with verbal discussion",
+    "thrives in interactive, supportive environments",
+    "uses resources and materials effectively"
+  ],
+  "interviews": {
+    "parent": "Parent reported a family history of speech, Autism, and ADHD. Student lives with both parents, siblings, and grandparents.",
+    "teacher": null
+  },
+  "observations": {
+    "psychologist": null
+  }
+}

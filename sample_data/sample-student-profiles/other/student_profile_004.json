@@ -1,0 +1,48 @@
+{
+  "first_name": "SOPHIA",
+  "last_name": "RAMIREZ",
+  "studentID": "019sr",
+  "date_of_birth": "2010-03-15",
+  "age": 14,
+  "grade_level": 8,
+  "gender": "Female",
+  "primary_language": "English",
+  "ethnicity": "Hispanic/Latina",
+  "iep_goals": [
+    "Improve reading comprehension by identifying main ideas and supporting details with 80% accuracy in 3 out of 4 trials",
+    "Complete multi-step math problems involving fractions with 75% accuracy in 3 out of 4 trials"
+  ],
+  "accommodations": [
+    "Extended time on tests (1.5x standard time)",
+    "Small group testing environment",
+    "Access to graphic organizers for writing assignments",
+    "Directions read aloud when requested"
+  ],
+  "learning_styles": [
+    "benefits from visual aids and examples",
+    "prefers step-by-step instructions",
+    "responds well to positive reinforcement"
+  ],
+  "disabilities": [
+    {
+      "type": "specific_learning_disability",
+      "name": "dyslexia"
+    }
+  ],
+  "services": [
+    {
+      "type": "Specialized Academic Instruction",
+      "frequency": "45 min, 3x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "80% time in regular class, 20% time in resource room",
+  "interviews": {
+    "parent": "Parent reported Sophia enjoys art and hands-on activities. She struggles with reading fluency and becomes frustrated when reading aloud.",
+    "teacher": "Sophia participates actively in class discussions but needs additional support to decode complex texts."
+  },
+  "observations": {
+    "psychologist": "Testing indicates average cognitive ability with significant discrepancies in reading skills. Benefits from structured literacy instruction."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "first_name": "Isabella",
+  "last_name": "Patel",
+  "studentID": "030ip",
+  "date_of_birth": "2016-10-05",
+  "age": 8,
+  "grade_level": 2,
+  "gender": "Female",
+  "primary_language": "Hindi",
+  "ethnicity": "Asian",
+  "iep_goals": [
+    "Use appropriate volume and rate of speech during classroom discussions with 80% accuracy",
+    "Initiate conversations with peers using appropriate social skills in 6 out of 10 opportunities"
+  ],
+  "accommodations": [
+    "Interpreter services as needed",
+    "Cultural liaison support",
+    "Modified assignments to account for language learning",
+    "Extra time for verbal responses"
+  ],
+  "learning_styles": [
+    "benefits from cultural connections to learning",
+    "responds well to collaborative activities"
+  ],
+  "disabilities": [
+    {
+      "type": "speech_or_language_impairment",
+      "name": "language disorder due to hearing impairment"
+    }
+  ],
+  "services": [
+    {
+      "type": "Speech-Language Therapy",
+      "frequency": "45 min, 2x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "85% regular class, 15% speech therapy and ESL support",
+  "interviews": {
+    "parent": "Parent reports Isabella is quiet at home but seems to understand more than she expresses verbally.",
+    "teacher": "Isabella is attentive and follows along but rarely volunteers to speak in class."
+  },
+  "observations": {
+    "psychologist": "Mild hearing loss impacting speech development; strong nonverbal reasoning abilities."
+  }
+}

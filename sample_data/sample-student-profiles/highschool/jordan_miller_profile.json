@@ -1,0 +1,47 @@
+{
+  "first_name": "Jordan",
+  "last_name": "Miller",
+  "studentID": "034jm",
+  "date_of_birth": "2008-01-30",
+  "age": 16,
+  "grade_level": 10,
+  "gender": "Non-binary",
+  "primary_language": "English",
+  "ethnicity": "White",
+  "iep_goals": [
+    "Remain focused on academic tasks for 30-minute periods without redirection in 7 out of 10 trials",
+    "Complete and submit assignments by due dates with no more than 2 reminders in 8 out of 10 opportunities"
+  ],
+  "accommodations": [
+    "Frequent movement breaks during long classes",
+    "Use of fidget tools and noise-canceling headphones",
+    "Assignment due date reminders and organizational support",
+    "Preferential seating away from high-traffic areas"
+  ],
+  "learning_styles": [
+    "benefits from kinesthetic learning activities",
+    "responds well to visual schedules and checklists"
+  ],
+  "disabilities": [
+    {
+      "type": "other_health_impairment",
+      "name": "attention deficit hyperactivity disorder (adhd)"
+    }
+  ],
+  "services": [
+    {
+      "type": "Executive Functioning Support",
+      "frequency": "30 min, 2x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "100% regular class with support",
+  "interviews": {
+    "parent": "Parent reports Jordan is creative and intelligent but struggles with organization and following through on tasks.",
+    "teacher": "Jordan contributes great ideas to discussions but has difficulty staying on task and completing assignments consistently."
+  },
+  "observations": {
+    "psychologist": "Above-average cognitive abilities with significant challenges in sustained attention and executive functioning. Benefits from structured support systems."
+  }
+}

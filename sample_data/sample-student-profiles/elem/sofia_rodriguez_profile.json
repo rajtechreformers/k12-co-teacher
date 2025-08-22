@@ -1,0 +1,47 @@
+{
+  "first_name": "Sofia",
+  "last_name": "Rodriguez",
+  "studentID": "024sr",
+  "date_of_birth": "2016-11-15",
+  "age": 8,
+  "grade_level": 2,
+  "gender": "Female",
+  "primary_language": "Spanish",
+  "ethnicity": "Hispanic/Latino",
+  "iep_goals": [
+    "Improve phonemic awareness by identifying beginning, middle, and ending sounds in CVC words with 80% accuracy",
+    "Read 50 sight words with automaticity in 4 out of 5 trials"
+  ],
+  "accommodations": [
+    "Bilingual dictionary access",
+    "Visual phonics cards",
+    "Extended time for reading tasks",
+    "Small group instruction for language arts"
+  ],
+  "learning_styles": [
+    "benefits from visual supports and picture cues",
+    "responds well to repetition and practice"
+  ],
+  "disabilities": [
+    {
+      "type": "specific_learning_disability",
+      "name": "developmental reading disorder"
+    }
+  ],
+  "services": [
+    {
+      "type": "Reading Intervention",
+      "frequency": "30 min, 4x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "80% regular class, 20% resource room",
+  "interviews": {
+    "parent": "Parent reports Sofia enjoys listening to stories but gets frustrated when trying to read independently.",
+    "teacher": "Sofia is eager to learn but needs constant support with decoding unfamiliar words."
+  },
+  "observations": {
+    "psychologist": "Average cognitive abilities with significant delays in phonological processing skills."
+  }
+}

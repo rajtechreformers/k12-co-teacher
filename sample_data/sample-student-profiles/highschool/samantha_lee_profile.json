@@ -1,0 +1,47 @@
+{
+  "first_name": "Samantha",
+  "last_name": "Lee",
+  "studentID": "036sl",
+  "date_of_birth": "2008-05-03",
+  "age": 16,
+  "grade_level": 10,
+  "gender": "Female",
+  "primary_language": "Korean",
+  "ethnicity": "Asian",
+  "iep_goals": [
+    "Communicate basic needs and academic questions using speech-generating device with 85% accuracy",
+    "Participate in classroom discussions using alternative communication methods in 7 out of 10 opportunities"
+  ],
+  "accommodations": [
+    "Sign language interpreter for classes",
+    "Written instructions for all assignments",
+    "Visual supports and graphic organizers",
+    "Access to speech-generating technology"
+  ],
+  "learning_styles": [
+    "excels with visual learning and written materials",
+    "benefits from peer collaboration and group work"
+  ],
+  "disabilities": [
+    {
+      "type": "hearing_impairment",
+      "name": "profound sensorineural hearing loss"
+    }
+  ],
+  "services": [
+    {
+      "type": "Deaf and Hard of Hearing Services",
+      "frequency": "30 min, 3x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "95% regular class, 5% deaf education support",
+  "interviews": {
+    "parent": "Parent reports Samantha is academically strong and socially engaged within the deaf community but wants to pursue mainstream college.",
+    "teacher": "Samantha is a diligent student who communicates effectively through ASL and written work. She's planning to study graphic design."
+  },
+  "observations": {
+    "psychologist": "Above-average intellectual functioning with strong visual-spatial abilities. Well-developed communication strategies and cultural identity."
+  }
+}

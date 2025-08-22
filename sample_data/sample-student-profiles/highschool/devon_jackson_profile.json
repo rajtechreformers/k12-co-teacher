@@ -1,0 +1,47 @@
+{
+  "first_name": "Devon",
+  "last_name": "Jackson",
+  "studentID": "032dj",
+  "date_of_birth": "2006-11-08",
+  "age": 18,
+  "grade_level": 12,
+  "gender": "Male",
+  "primary_language": "English",
+  "ethnicity": "African American",
+  "iep_goals": [
+    "Solve multi-step algebraic equations and interpret solutions within context with 70% accuracy",
+    "Apply geometric concepts to real-world problems with 75% accuracy in 4 out of 5 trials"
+  ],
+  "accommodations": [
+    "Calculator for all math assignments and tests",
+    "Formula sheets provided for assessments",
+    "Break down multi-step problems into smaller components",
+    "Allow use of graph paper and manipulatives"
+  ],
+  "learning_styles": [
+    "benefits from hands-on learning and real-world applications",
+    "needs step-by-step instruction with frequent checks for understanding"
+  ],
+  "disabilities": [
+    {
+      "type": "specific_learning_disability",
+      "name": "dyscalculia"
+    }
+  ],
+  "services": [
+    {
+      "type": "Math Intervention Services",
+      "frequency": "45 min, 4x weekly",
+      "start_date": "2024-08-20",
+      "end_date": "2025-08-20"
+    }
+  ],
+  "placement": "85% regular class, 15% resource room",
+  "interviews": {
+    "parent": "Parent reports Devon loves working with his hands and wants to pursue automotive technology but struggles with the math requirements.",
+    "teacher": "Devon has strong mechanical reasoning but needs significant support with mathematical calculations and problem-solving."
+  },
+  "observations": {
+    "psychologist": "Average intellectual functioning with specific deficits in numerical processing and mathematical reasoning. Strong spatial and mechanical aptitudes."
+  }
+}
