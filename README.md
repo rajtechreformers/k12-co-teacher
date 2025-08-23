@@ -13,9 +13,7 @@ In K-12 classrooms, teachers are responsible for meeting the diverse needs of al
   - [Build environment specifications](#build-environment-specifications)
   - [AWS account](#aws-account)
   - [Tools](#tools)
-- [How to build and deploy the solution](#how-to-build-and-deploy-the-solution)
-  - [Configuration](#configuration)
-  - [Build and deploy](#build-and-deploy)
+- [How to build and run the solution](#how-to-build-and-run-the-solution)
 ---
 
 ## Collaboration
@@ -208,17 +206,17 @@ The solution deploys the following components:
 
 ---
 
-## How to build and deploy the solution
+## How to build and run the solution
 
 Before you deploy the solution, review the architecture and prerequisites sections in this guide. Follow the step-by-step instructions in this section to configure and deploy the solution into your account.
 
-### Authenticate for AWS deployment
+### Authenticate for AWS 
 
 ```bash
 AWS configure
 ```
 
-Provide the Access key and secret, For Region select us-east-1 ( or region of your choice)
+Provide the Access key and secret, For Region select us-west-2 ( or region of your choice)
 
 ### Get the code on your dev machine
 
@@ -245,9 +243,6 @@ npm install
 ```
 npm run dev
 ```
-
-Deploy the solution
-. . .
 
 ## Support
 
