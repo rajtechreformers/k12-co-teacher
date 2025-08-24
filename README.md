@@ -50,8 +50,8 @@ Thanks for your interest in our solution. Having specific examples of replicatio
 
 ## Authors
 
-- Noor Dhaliwal - rdhali07@calpoly.edu
 - Sharon Liang - sliang19@calpoly.edu
+- Noor Dhaliwal - rdhali07@calpoly.edu
 
 
 ## Licence
