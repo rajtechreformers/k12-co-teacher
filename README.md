@@ -70,8 +70,8 @@ or in the "license" file accompanying this file. This file is distributed on an 
      
 2. Student & Class Data Management
    
-   - **REST API** (API Gateway → Lambda) retrieves **student profiles**, **classes**, and **rosters** from **DynamoDB**.
-   - DynamoDB tables include: **Chat History**, **Classes → Students**, **Class Attributes**, **Teachers → Classes**, **Student Profiles**.
+   - **REST API** (API Gateway -> Lambda) retrieves **student profiles**, **classes**, and **rosters** from **DynamoDB**.
+   - DynamoDB tables include: **Chat History**, **Classes -> Students**, **Class Attributes**, **Teachers -> Classes**, **Student Profiles**.
     
 3. Conversational AI, Tool Calling & Chat Modes
 
@@ -100,8 +100,8 @@ The solution deploys the following components:
 
 - **AWS Amplify Frontend**: Hosts the React-based web application for educators to interact with the chatbot. Integrated with **Amazon Cognito** for secure authentication and session management.
 
-- **Amazon Cognito**: Provides user authentication and authorization through a **Cognito User Pool**. Issues JWT tokens that are used by the frontend to access protected APIs via API Gateway.
-
+- **Amazon Cognito**: Provides user authentication and authorization through a **Cognito User Pool**.
+  
 - **Amazon API Gateway**:  
   - **REST API**: Exposes endpoints to retrieve student profiles, classes, and rosters via Lambda functions.  
   - **WebSocket API**: Maintains real-time, bidirectional communication between the chatbot UI and the inference engine.
@@ -116,16 +116,12 @@ The solution deploys the following components:
 
 - **Amazon DynamoDB**: Stores all application data, including:  
   - **Chat History**: Persists conversation history across sessions.  
-  - **Classes → Students**: Maps classes to their enrolled students.  
+  - **Classes->Students**: Maps classes to their enrolled students.  
   - **Class Attributes**: Stores metadata about classes.  
-  - **Teachers → Classes**: Maps educators to their classes.  
+  - **Teachers->Classes**: Maps educators to their classes.  
   - **Student Profiles**: Holds individual student records and attributes.  
 
 - **Amazon Bedrock**: Provides access to foundation models for **real-time conversational AI**. Supports tool calling, enabling the chatbot to trigger Lambda functions for profile updates. Uses context from DynamoDB (chat history, class/student data) for context-aware responses.  
-
-- **Chat Modes**:  
-  - **Student Chat**: Scoped to a single student; retrieval and tool calls restricted to that student’s profile and history.  
-  - **Class Chat**: Class-wide conversation; references all student profiles in a class (aggregations/summaries) without exposing sensitive details.  
 
 ## Prerequisites
 
@@ -138,7 +134,6 @@ The solution deploys the following components:
 -   AWS Amplify
 -   Amazon API Gateway
 -   Amazon Bedrock
--   Amazon CloudFront
 -   Amazon Cognito
 -   Amazon DynamoDB
 -   AWS Lambda
@@ -155,12 +150,6 @@ The solution deploys the following components:
   - The chatbot requires base data in DynamoDB tables (`Student Profiles`, `Classes → Students`, `Class Attributes`, `Teachers → Classes`).  
   - A sample script, **`sample_data/add_to_dynamo.py`**, is provided to automatically seed DynamoDB with example data.  
   - Alternatively, you can load your own student/class data into the tables before using the chatbot.  
-
-
-### Build environment specifications
-
-- To build and deploy this solution. . .
-
 
 ### Tools
 
