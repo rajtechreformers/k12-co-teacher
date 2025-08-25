@@ -139,12 +139,13 @@ The solution deploys the following components:
 -   AWS Lambda
 ```
 - **IAM Role Permissions (per Lambda)**: Each Lambda requires access to specific DynamoDB tables (and Bedrock, for inference).
-  - **getClassesForDashboard** - read access to **Class Attributes**, **Teachers -> Classes**
-  - **getStudentsForClass** - read access to **Classes -> Students**
-  - **getStudentProfile** - read access to **Student Profiles**
-  - **getChatHistory** - read access to **Chat History**
-  - **editStudentProfile** - read and write access to **Student Profiles**
-  - **Inference Lambda** - read and write access to **Chat History**, **Class Attributes**, **Student Profiles**; **can invoke Bedrock models**; **can post to WebSocket connections**  
+
+  - **`getClassesForDashboard`** - read access to **Class Attributes**, **Teachers->Classes**
+  - **`getStudentsForClass`** - read access to **Classes->Students**
+  - **`getStudentProfile`** - read access to **Student Profiles**
+  - **`getChatHistory`** - read access to **Chat History**
+  - **`editStudentProfile`** - read and write access to **Student Profiles**
+  - **`inference`** - read and write access to **Chat History**, **Class Attributes**, **Student Profiles**; Bedrock invoke permissions; WebSocket callback permissions.
   
 ### DynamoDB Data Initialization:  
   - The chatbot requires base data in DynamoDB tables (`Student Profiles`, `Classes → Students`, `Class Attributes`, `Teachers → Classes`).  
