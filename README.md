@@ -196,43 +196,29 @@ The solution deploys the following components:
 
 ---
 
-## How to build and run the solution
+## Deployment
 
-Before you deploy the solution, review the architecture and prerequisites sections in this guide. Follow the step-by-step instructions in this section to configure and deploy the solution into your account.
+For complete deployment instructions in a fresh AWS account, see:
 
-### Authenticate for AWS 
+**[📋 Manual Deployment Guide](./MANUAL_DEPLOYMENT.md)**
 
-```bash
-AWS configure
-```
+This guide includes:
+- Step-by-step AWS resource creation
+- Environment variable configuration
+- Frontend deployment with Amplify
+- Sample data seeding
+- Troubleshooting tips
 
-Provide the Access key and secret, For Region select us-west-2 ( or region of your choice)
-
-### Get the code on your dev machine
+### Quick Local Development
 
 ```bash
 git clone https://github.com/cal-poly-dxhub/k12-co-teacher.git
-```
-
-Change the directory to code directory
-
-```bash
- cd k12-co-teacher/frontend
-```
-
-### Build the code
-
-Install the dependencies
-
-```bash
+cd k12-co-teacher/frontend
 npm install
-```
-
-### Run Locally
-
-```
 npm run dev
 ```
+
+*Note: You'll need to configure environment variables to connect to your AWS resources.*
 
 ## Support
 
