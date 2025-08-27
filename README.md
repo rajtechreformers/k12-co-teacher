@@ -10,7 +10,6 @@ In K-12 classrooms, teachers are responsible for meeting the diverse needs of al
   - [Architecture reference diagram](#architecture-reference-diagram)
   - [Solution components](#solution-components)
 - [Prerequisites](#prerequisites)
-  - [Build environment specifications](#build-environment-specifications)
   - [AWS account](#aws-account)
   - [Tools](#tools)
 - [How to build and deploy the solution](#how-to-build-and-deploy-the-solution)
@@ -149,8 +148,8 @@ The solution deploys the following components:
   
 ### DynamoDB Data Initialization:  
   - The chatbot requires base data in DynamoDB tables (`Student Profiles`, `Classes → Students`, `Class Attributes`, `Teachers → Classes`).  
-  - A sample script, **`sample_data/add_to_dynamo.py`**, is provided to automatically seed DynamoDB with example data.  
-  - Alternatively, you can load your own student/class data into the tables before using the chatbot.  
+  - A script, **`sample_data/load_csv_to_dynamo.py`**, is provided to automatically seed DynamoDB with example data.  
+  - Alternatively, you can load your own student/class data into the tables using **`sample_data/add_to_dynamo.py`**.  
 
 ### Tools
 
@@ -218,7 +217,7 @@ npm install
 npm run dev
 ```
 
-*Note: You'll need to configure environment variables to connect to your AWS resources.*
+*Note: You'll need to configure environment variables in **`frontend/.env.local`** to connect to your AWS resources.*
 
 ## Support
 
