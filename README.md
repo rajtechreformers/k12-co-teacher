@@ -13,7 +13,7 @@ In K-12 classrooms, teachers are responsible for meeting the diverse needs of al
   - [Build environment specifications](#build-environment-specifications)
   - [AWS account](#aws-account)
   - [Tools](#tools)
-- [How to build and run the solution](#how-to-build-and-run-the-solution)
+- [How to build and deploy the solution](#how-to-build-and-deploy-the-solution)
 ---
 
 ## Collaboration
@@ -196,11 +196,11 @@ The solution deploys the following components:
 
 ---
 
-## Deployment
+## How to build and deploy the solution
 
 For complete deployment instructions in a fresh AWS account, see:
 
-**[📋 Manual Deployment Guide](./MANUAL_DEPLOYMENT.md)**
+**[Manual Deployment Guide](./MANUAL_DEPLOYMENT.md)**
 
 This guide includes:
 - Step-by-step AWS resource creation

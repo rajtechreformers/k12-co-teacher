@@ -190,7 +190,7 @@ Create 6 Lambda functions (Python 3.11, use the IAM role from Step 3):
 4. **Deploy** to a stage (e.g., `dev`)
 5. **Note the WebSocket URL** (e.g., `wss://xyz789.execute-api.us-west-2.amazonaws.com/dev`)
 
-## Step 7: Create Cognito User Pool (Optional but Recommended)
+## Step 7: Create Cognito User Pool 
 
 1. Create a **User Pool** with email sign-in
 2. Create an **App Client** (no secret)
@@ -251,13 +251,6 @@ cd sample_data
 pip install boto3
 python add_to_dynamo.py
 ```
-
-## Step 13: Test the Application
-
-1. Visit your **Amplify URL**
-2. **Sign up** for a new teacher account
-3. Verify you can see **sample classes and students**
-4. Test **chat functionality**
 
 ## Troubleshooting
 
