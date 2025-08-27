@@ -29,6 +29,8 @@ Create these 5 tables with **exact names** (use AWS Console or CLI):
 | `k12-coteacher-chat-history` | `TeacherId` (String) | `sortId` (String) |
 | `k12-coteacher-class-attributes` | `classID` (String) | - |
 
+The full schema of these tables can be found in **`sample_data/dynamo_data`** for reference, but only a PK needs to be configured to create the tables.
+
 **CLI Commands:**
 ```bash
 aws dynamodb create-table --table-name k12-coteacher-teachers-to-classes \
