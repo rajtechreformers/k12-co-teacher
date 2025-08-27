@@ -246,10 +246,11 @@ Add your Amplify URL to Cognito:
 
 ## Step 12: Seed Sample Data
 
+**Load Data from CSV files**
 ```bash
 cd sample_data
 pip install boto3
-python add_to_dynamo.py
+python load_csv_to_dynamo.py
 ```
 
 ## Troubleshooting
