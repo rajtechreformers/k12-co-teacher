@@ -3,12 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm install
+        - cd frontend
+        - npm ci   # use npm install if no package-lock.json
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: .next
+    baseDirectory: frontend/.next
     files:
       - '**/*'
   cache:
