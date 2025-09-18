@@ -4,7 +4,7 @@ import uuid
 from conversation_history import *
 from student_utils import *
 from utils import *
-
+import os
 
 bedrock = boto3.client(service_name='bedrock-runtime', region_name='us-west-2')
 
@@ -12,7 +12,6 @@ def lambda_handler(event, context):
     if event['requestContext']['routeKey'] == '$connect':
         return {'statusCode': 200}
     
-    # Handle disconnect events  
     if event['requestContext']['routeKey'] == '$disconnect':
         return {'statusCode': 200}
 
@@ -20,17 +19,20 @@ def lambda_handler(event, context):
     print(f"Context: {context}")
     
     try:
-        # Parse the JSON body
+        # Parse request
         message_data = json.loads(event.get("body", "{}"))
         body = message_data.get("body") 
         teacher_id = message_data.get("teacherId")
         session_id = message_data.get("sessionId")
-        student_ids = message_data.get("studentIDs",[])
-        chat_type = "student" if len(student_ids) == 1 else "general"
+        student_ids = message_data.get("studentIDs", [])
         class_id = message_data.get("classId", "")
+
+        chat_type = "student" if len(student_ids) == 1 else "general"
 
         print(f"Teacher ID: {teacher_id}")
         print(f"Session ID: {session_id}")
+        print(f"Student IDs: {student_ids}")
+        print(f"Chat Type: {chat_type}")
 
         domain = event['requestContext']['domainName']
         stage = event['requestContext']['stage']
@@ -44,21 +46,26 @@ def lambda_handler(event, context):
         if not body or not teacher_id:
             return {'statusCode': 400, 'body': 'Missing body or teacherId'}
 
-        # handling chat history
+        # New conversation
         is_new_convo = session_id is None
         if is_new_convo:
             session_id = str(uuid.uuid4())
-            # create place holder title then change the title.
             try:
                 create_conversation(
                     user_id=teacher_id,
-                    conversation_attributes={"conversation_id": session_id,"title": "", "type":chat_type, "student_ids":student_ids, "class_id": class_id}
+                    conversation_attributes={
+                        "conversation_id": session_id,
+                        "title": "",
+                        "type": chat_type,
+                        "student_ids": student_ids,
+                        "class_id": class_id
+                    }
                 )
             except Exception as e:
                 print(f"Error creating conversation: {e}")
                 return {'statusCode': 500, 'body': 'Error creating conversation'}
         
-        # user convo msg added to dynamo
+        # Save user message
         try:
             create_chat_message(
                 user_id=teacher_id,
@@ -71,54 +78,57 @@ def lambda_handler(event, context):
             return {'statusCode': 500, 'body': 'Error saving message'}
 
         assistant_response = ""
-        conversation = [
-                {
-                    "role": "user",
-                    "content": [{"text": body}],
-                }
-            ]
-        
-        # getting student profile from student ids
+
+        # ✅ Safe environment variable lookups with fallback
+        STUDENT_PROFILE_API = os.environ.get(
+            "STUDENT_PROFILE_API_ENDPOINT",
+            "https://8le5se2aja.execute-api.us-west-2.amazonaws.com/Dev/getStudentProfile"
+        )
+        EDIT_STUDENT_PROFILE_API = os.environ.get(
+            "EDIT_STUDENT_PROFILE_API_ENDPOINT",
+            "https://8le5se2aja.execute-api.us-west-2.amazonaws.com/Dev/editStudentProfile"
+        )
+
+        print(f"Using STUDENT_PROFILE_API: {STUDENT_PROFILE_API}")
+        print(f"Using EDIT_STUDENT_PROFILE_API: {EDIT_STUDENT_PROFILE_API}")
+
+        # Fetch student profiles
         studentProfiles = []
         for student in student_ids:
             try:
-                studentProfile = post_json("https://6ll9oei3u3.execute-api.us-west-2.amazonaws.com/dev/getStudentProfile", {"studentID": student})
+                studentProfile = post_json(STUDENT_PROFILE_API, {"studentID": student})
                 studentProfiles.append(studentProfile)
             except Exception as e:
                 print(f"Error fetching student profile for {student}: {e}")
                 studentProfiles.append({})
-        
-        print(f"Student Profiles: {studentProfiles}")
-        # students_to_disabilties = get_students_data(studentProfiles)
-        # print(f"Student to dis mapping: {students_to_disabilties}")
 
+        print(f"Student Profiles: {studentProfiles}")
+
+        # Build system prompt
         system_prompt = ""
-        # conditional claude prompts for student vs. general chat
         if chat_type == "student":
             print("student chat")
             student_profile_clean = studentProfiles[0].get("body", {}).get("Item", {})
             print(student_profile_clean)
             formatted_profile = format_student_profile(student_profile_clean, teacher_id)
             print(formatted_profile)
-            system_prompt = load_prompt_template("prompts/3_7_prompt_student_chat.txt", {
-                "STUDENT_PROFILE": formatted_profile
-            })
-            print(system_prompt)
-            
+            system_prompt = load_prompt_template(
+                "prompts/3_7_prompt_student_chat.txt",
+                {"STUDENT_PROFILE": formatted_profile}
+            )
         elif chat_type == "general":
             print("general chat")
-            # mapping
             students_to_disabilties = get_students_data(studentProfiles)
             formatted_mappings = json.dumps(students_to_disabilties, indent=2)
-            system_prompt = load_prompt_template("prompts/3_7_prompt_all_chat.txt", {
-                "MAPPINGS_JSON": formatted_mappings
-            })
+            system_prompt = load_prompt_template(
+                "prompts/3_7_prompt_all_chat.txt",
+                {"MAPPINGS_JSON": formatted_mappings}
+            )
         
+        # Conversation history
         try:
             convo_messages = get_chat_messages(teacher_id, session_id)
-            print(f"convo messages: {convo_messages}")
             formatted_convo = format_history_for_claude(convo_messages)
-            print(f"formatted convo: {formatted_convo}")
             formatted_convo.append({
                 "role": "user",
                 "content": [{"text": body}]
@@ -126,20 +136,23 @@ def lambda_handler(event, context):
             conversation = formatted_convo
         except Exception as e:
             print(f"Error getting conversation history: {e}")
-            # Continue with just the current message
+            conversation = [{
+                "role": "user",
+                "content": [{"text": body}]
+            }]
 
-        # tool for EDIT_Q
+        # Tool config
         tool_config = {
-            "tools":[
+            "tools": [
                 {
-                    "toolSpec":{
+                    "toolSpec": {
                         "name": "editStudentProfile",
-                        "description": "Update a student's profile with a teacher's observation or comment about the given student.",
+                        "description": "Update a student's profile with a teacher's observation or comment.",
                         "inputSchema": {
-                            "json":{
+                            "json": {
                                 "type": "object",
                                 "properties": {
-                                    "teacherComment": { "type": "string", "description": "The observation or note about student to be added" }
+                                    "teacherComment": { "type": "string" }
                                 },
                                 "required": ["teacherComment"]
                             }
@@ -147,28 +160,30 @@ def lambda_handler(event, context):
                     }
                 }
             ]
-        }           
-        
+        }
+
+        # Call Bedrock
         try:
             if chat_type == "general":
                 stream_response = bedrock.converse_stream(
-                        modelId='us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-                        messages=conversation,
-                        system = [{"text": system_prompt}],
-                        inferenceConfig={"maxTokens": 1024, "temperature": 0.3, "topP": 0.9},
-                    )
-            elif chat_type == "student":
+                    modelId='us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+                    messages=conversation,
+                    system=[{"text": system_prompt}],
+                    inferenceConfig={"maxTokens": 1024, "temperature": 0.3, "topP": 0.9},
+                )
+            else:
                 stream_response = bedrock.converse_stream(
-                        modelId='us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-                        messages=conversation,
-                        system = [{"text": system_prompt}],
-                        toolConfig=tool_config,
-                        inferenceConfig={"maxTokens": 1024, "temperature": 0.3, "topP": 0.9},
-                    )
+                    modelId='us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+                    messages=conversation,
+                    system=[{"text": system_prompt}],
+                    toolConfig=tool_config,
+                    inferenceConfig={"maxTokens": 1024, "temperature": 0.3, "topP": 0.9},
+                )
         except Exception as e:
             print(f"Error calling Bedrock: {e}")
             return {'statusCode': 500, 'body': 'Error processing request'}
-        
+
+        # Handle streaming response
         stop_reason = ""
         tool_use = {}
         tool_result = None
@@ -184,16 +199,14 @@ def lambda_handler(event, context):
                     tool_use['input'] += delta2['toolUse']['input']
                 elif 'text' in delta2:
                     text = chunk["contentBlockDelta"]["delta"]["text"]
-                    print(text, end="")
                     assistant_response += text
                     try:
                         apigw_client.post_to_connection(
                             ConnectionId=event['requestContext']['connectionId'],
-                            Data=json.dumps({'message': text, 'sessionId':session_id, "is_streaming":True}).encode('utf-8')
+                            Data=json.dumps({'message': text, 'sessionId': session_id, "is_streaming": True}).encode('utf-8')
                         )
                     except Exception as e:
                         print(f"Error sending WebSocket message: {e}")
-                        # Continue processing even if WebSocket fails
             elif 'contentBlockStart' in chunk:
                 tool = chunk['contentBlockStart']['start']['toolUse']
                 tool_use['toolUseId'] = tool['toolUseId']
@@ -209,58 +222,19 @@ def lambda_handler(event, context):
                 stop_reason = chunk['messageStop']['stopReason']
         
         final_assistant_response = assistant_response
-        
+
+        # Handle tool use
         if stop_reason == "tool_use" and tool_use.get('name') == 'editStudentProfile':
             try:
-                tool_result = post_json("https://6ll9oei3u3.execute-api.us-west-2.amazonaws.com/dev/editStudentProfile", 
-                                {"studentID": student_ids[0],
-                                "teacherID": teacher_id,
-                                "teacherComment": body})
+                tool_result = post_json(
+                    EDIT_STUDENT_PROFILE_API,
+                    {"studentID": student_ids[0], "teacherID": teacher_id, "teacherComment": body}
+                )
             except Exception as e:
                 print(f"Error calling editStudentProfile API: {e}")
                 tool_result = None
 
-            if tool_result:
-                try:
-                    # Update conversation with tool result for second call
-                    updated_conversation = conversation.copy()
-                    updated_conversation.append({
-                        "role": "assistant",
-                        "content": [{"text": assistant_response}]
-                    })
-                    updated_conversation.append({
-                        "role": "user", 
-                        "content": [{"text": json.dumps(tool_result)}]
-                    })
-                    
-                    stream_response = bedrock.converse_stream(
-                        modelId='us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-                        messages=updated_conversation,
-                        system = [{"text": system_prompt}],
-                        inferenceConfig={"maxTokens": 1024, "temperature": 0.3, "topP": 0.9},
-                    )
-                    assistant_response2 = ""
-                    for chunk in stream_response["stream"]:
-                        if "contentBlockDelta" in chunk:
-                            delta2 = chunk["contentBlockDelta"]["delta"]
-                            if 'text' in delta2:
-                                text = chunk["contentBlockDelta"]["delta"]["text"]
-                                print(text, end="")
-                                assistant_response2 += text
-                                try:
-                                    apigw_client.post_to_connection(
-                                        ConnectionId=event['requestContext']['connectionId'],
-                                        Data=json.dumps({'message': text, 'sessionId':session_id, "is_streaming":True}).encode('utf-8')
-                                    )
-                                except Exception as e:
-                                    print(f"Error sending WebSocket message: {e}")
-                    
-                    # Use the second response as the final response to store
-                    final_assistant_response = assistant_response2
-                except Exception as e:
-                    print(f"Error handling tool result: {e}")
-        
-        # Always store exactly one assistant response per user message
+        # Save assistant response
         try:
             create_chat_message(
                 user_id=teacher_id,
@@ -271,14 +245,14 @@ def lambda_handler(event, context):
         except Exception as e:
             print(f"Error saving assistant message: {e}")
 
-        # Generate title
+        # Title generation
         if not get_conversation_title(teacher_id, session_id):
             try:
-                title_prompt = load_prompt_template("prompts/3_5_prompt_generate_title.txt", {
-                        "BODY": body
-                    })
+                title_prompt = load_prompt_template(
+                    "prompts/3_5_prompt_generate_title.txt",
+                    {"BODY": body}
+                )
                 title = call_bedrock(title_prompt)
-                print(f"Title: {title}")
                 update_conversation_title(teacher_id, session_id, title)
             except Exception as e:
                 print(f"Error generating title: {e}")
@@ -286,23 +260,13 @@ def lambda_handler(event, context):
         try:
             apigw_client.post_to_connection(
                 ConnectionId=event['requestContext']['connectionId'],
-                Data=json.dumps({
-                    'sessionId': session_id,
-                    'status': 'complete',
-                    'is_streaming': False
-                }).encode('utf-8')
+                Data=json.dumps({'sessionId': session_id, 'status': 'complete', 'is_streaming': False}).encode('utf-8')
             )
         except Exception as e:
             print(f"Error sending final WebSocket message: {e}")
         
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'conversationId': session_id, 'status': 'complete'})
-        }
+        return {'statusCode': 200, 'body': json.dumps({'conversationId': session_id, 'status': 'complete'})}
     
     except Exception as e:
         print(f"Unexpected error: {e}")
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'error': 'Internal server error'})
-        }
+        return {'statusCode': 500, 'body': json.dumps({'error': 'Internal server error'})}
