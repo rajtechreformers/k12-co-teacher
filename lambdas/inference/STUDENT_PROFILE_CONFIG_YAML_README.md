@@ -1,6 +1,6 @@
 # Student Profile Configuration Guide
 
-This guide explains how to customize the `student_profile_config.yaml` file to control what student information gets included in AI inference without modifying any code.
+This guide explains how to customize the `student_profile_config.yaml` file to control what student information gets included in AI inference without modifying any code. Feel free to reference `student_profile_config_superset_example.yaml` for a sample superset of possible fields for student profile data.
 
 ## Overview
 
