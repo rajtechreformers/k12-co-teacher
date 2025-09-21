@@ -89,8 +89,6 @@ def lambda_handler(event, context):
                 studentProfiles.append({})
         
         print(f"Student Profiles: {studentProfiles}")
-        # students_to_disabilties = get_students_data(studentProfiles)
-        # print(f"Student to dis mapping: {students_to_disabilties}")
 
         system_prompt = ""
         # conditional claude prompts for student vs. general chat
@@ -98,18 +96,19 @@ def lambda_handler(event, context):
             print("student chat")
             student_profile_clean = studentProfiles[0].get("body", {}).get("Item", {})
             print(student_profile_clean)
-            formatted_profile = format_student_profile(student_profile_clean, teacher_id)
-            print(formatted_profile)
+            formatted_profile_2 = format_student_profile_2(student_profile_clean, teacher_id)
+            print(formatted_profile_2)
             system_prompt = load_prompt_template("prompts/3_7_prompt_student_chat.txt", {
-                "STUDENT_PROFILE": formatted_profile
+                "STUDENT_PROFILE": formatted_profile_2
             })
             print(system_prompt)
             
         elif chat_type == "general":
             print("general chat")
             # mapping
-            students_to_disabilties = get_students_data(studentProfiles)
-            formatted_mappings = json.dumps(students_to_disabilties, indent=2)
+            students_to_disabilties_2 = get_students_data_2(studentProfiles)
+            print(students_to_disabilties_2)
+            formatted_mappings = json.dumps(students_to_disabilties_2, indent=2)
             system_prompt = load_prompt_template("prompts/3_7_prompt_all_chat.txt", {
                 "MAPPINGS_JSON": formatted_mappings
             })
