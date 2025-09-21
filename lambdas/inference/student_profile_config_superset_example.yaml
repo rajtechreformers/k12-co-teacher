@@ -1,0 +1,126 @@
+# Student Profile Schema Configuration
+# This file defines what fields to extract from student profiles and how to format them
+# Customers can enable/disable any field or add new ones without code changes
+
+# Basic student information (always included)
+basic_info:
+  - field: "first_name"
+    display_name: "First Name"
+    required: true
+    fallback: "Unknown"
+  
+  - field: "last_name" 
+    display_name: "Last Name"
+    required: true
+    fallback: ""
+  
+  - field: "grade_level"
+    display_name: "Grade"
+    required: false
+    fallback: "N/A"
+  
+  - field: "age"
+    display_name: "Age"
+    required: false
+    fallback: "N/A"
+
+# All profile fields - customers can enable/disable or add new ones
+profile_fields:
+  - field: "disabilities"
+    display_name: "Disabilities"
+    enabled: true
+    format: "list"
+    extract_fields:
+      - "type"
+      - "name"
+    fallback: "None listed"
+  
+  - field: "accommodations"
+    display_name: "Accommodations"
+    enabled: true
+    format: "list"
+    fallback: "None listed"
+  
+  - field: "iep_goals"
+    display_name: "IEP Goals"
+    enabled: true
+    format: "list"
+    fallback: "None listed"
+  
+  - field: "learning_styles"
+    display_name: "Learning Styles"
+    enabled: false
+    format: "list"
+    fallback: "None listed"
+  
+  - field: "services"
+    display_name: "Services"
+    enabled: false
+    format: "structured"
+    extract_fields:
+      - "type"
+      - "frequency"
+      - "start_date"
+      - "end_date"
+    fallback: "None listed"
+  
+  - field: "interviews"
+    display_name: "Interview Notes"
+    enabled: true
+    format: "structured"
+    extract_fields:
+      - "parent"
+      - "teacher"
+    fallback: "N/A"
+  
+  - field: "observations"
+    display_name: "Observations"
+    enabled: true
+    format: "structured"
+    extract_fields:
+      - "psychologist"
+    fallback: "N/A"
+  
+  - field: "teacherComments"
+    display_name: "Teacher Comments"
+    enabled: true
+    format: "dynamic"
+    fallback: "No comments yet"
+  
+  - field: "behavioral_notes"
+    display_name: "Behavioral Notes"
+    enabled: false
+    format: "text"
+    fallback: "None"
+  
+  - field: "gender"
+    display_name: "Gender"
+    enabled: false
+    format: "text"
+    fallback: "N/A"
+  
+  - field: "primary_language"
+    display_name: "Primary Language"
+    enabled: false
+    format: "text"
+    fallback: "N/A"
+  
+  - field: "ethnicity"
+    display_name: "Ethnicity"
+    enabled: false
+    format: "text"
+    fallback: "N/A"
+  
+  - field: "placement"
+    display_name: "Placement"
+    enabled: false
+    format: "text"
+    fallback: "N/A"
+
+# Formatting preferences
+formatting:
+  section_separator: "---"
+  list_bullet: "- "
+  indent: "  "
+  max_list_items: 10 
+  truncate_long_text: 500 

@@ -1,0 +1,50 @@
+# Student Profile Schema Configuration
+# This file defines what fields to extract from student profiles and how to format them
+# Customers can enable/disable any field or add new ones without code changes
+
+# Basic student information (always included)
+basic_info:
+  - field: "first_name"
+    display_name: "First Name"
+    required: true
+    fallback: "Unknown"
+  
+  - field: "last_name" 
+    display_name: "Last Name"
+    required: true
+    fallback: ""
+  
+  - field: "grade_level"
+    display_name: "Grade"
+    required: false
+    fallback: "N/A"
+  
+  - field: "age"
+    display_name: "Age"
+    required: false
+    fallback: "N/A"
+
+# All profile fields - customers can enable/disable or add new ones
+profile_fields:
+  - field: "disabilities"
+    display_name: "Disabilities"
+    enabled: true
+    format: "structured"
+    extract_fields:
+      - "type"
+      - "name"
+    fallback: "None listed"
+  
+  - field: "accommodations"
+    display_name: "Accommodations"
+    enabled: true
+    format: "list"
+    fallback: "None listed"
+    # hi
+# Formatting preferences
+formatting:
+  section_separator: "---"
+  list_bullet: "- "
+  indent: "  "
+  max_list_items: 10
+  truncate_long_text: 500  
