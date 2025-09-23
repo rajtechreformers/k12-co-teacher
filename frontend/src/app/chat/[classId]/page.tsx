@@ -51,8 +51,13 @@ export default function ChatPage() {
 
   const classId = params.classId as string;
 
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+  if (!wsUrl) {
+    throw new Error("NEXT_PUBLIC_WS_URL is not defined");
+  }
+
   const { isConnected, connect, disconnect, sendMessage } = useWebSocket({
-    url: process.env.NEXT_PUBLIC_WS_URL || 'wss://zr2han1x4j.execute-api.us-west-2.amazonaws.com/dev',
+    url: wsUrl,
     // Replace the onMessage handler in your useWebSocket call with this:
     onMessage: (data: any) => {
       if (data.message) {

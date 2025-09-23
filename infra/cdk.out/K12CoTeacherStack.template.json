@@ -1,0 +1,2031 @@
+{
+ "Resources": {
+  "K12CoTeacherUserPool3A1146D6": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "RequireUppercase": true
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "given_name",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "family_name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "k12-coteacher-users",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherUserPool/Resource"
+   }
+  },
+  "K12CoTeacherUserPoolClient40534F36": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "openid",
+     "email",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "http://localhost:3000",
+     "https://localhost:3000"
+    ],
+    "ClientName": "k12-coteacher-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "LogoutURLs": [
+     "http://localhost:3000/login",
+     "https://localhost:3000/login"
+    ],
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "UserPoolId": {
+     "Ref": "K12CoTeacherUserPool3A1146D6"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherUserPoolClient/Resource"
+   }
+  },
+  "K12CoTeacherUserPoolDomain1FEFD953": {
+   "Type": "AWS::Cognito::UserPoolDomain",
+   "Properties": {
+    "Domain": {
+     "Fn::Join": [
+      "",
+      [
+       "k12-coteacher-",
+       {
+        "Ref": "AWS::AccountId"
+       }
+      ]
+     ]
+    },
+    "UserPoolId": {
+     "Ref": "K12CoTeacherUserPool3A1146D6"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherUserPoolDomain/Resource"
+   }
+  },
+  "ChatHistoryTableA22BA13C": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "TeacherId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "sortId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "TeacherId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "sortId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "k12-coteacher-chat-history",
+    "TimeToLiveSpecification": {
+     "AttributeName": "expires_at",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/ChatHistoryTable/Resource"
+   }
+  },
+  "StudentProfilesTableBA32A00C": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "studentId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "studentId",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "k12-coteacher-student-profiles"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/StudentProfilesTable/Resource"
+   }
+  },
+  "ClassAttributesTable1074E5D5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "classId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "classId",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "k12-coteacher-class-attributes"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/ClassAttributesTable/Resource"
+   }
+  },
+  "ClassToStudentsTableFFD658EF": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "classId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "classId",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "k12-coteacher-class-to-students"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/ClassToStudentsTable/Resource"
+   }
+  },
+  "TeacherToClassesTable50717B2E": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "teacherId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "teacherId",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "k12-coteacher-teacher-to-classes"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/TeacherToClassesTable/Resource"
+   }
+  },
+  "LambdaExecutionRoleD5C26073": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::GetAtt": [
+            "ChatHistoryTableA22BA13C",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "ClassAttributesTable1074E5D5",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "ClassToStudentsTableFFD658EF",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "StudentProfilesTableBA32A00C",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "TeacherToClassesTable50717B2E",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "BedrockAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "execute-api:ManageConnections",
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "ApiGatewayAccess"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/LambdaExecutionRole/Resource"
+   }
+  },
+  "GetClassesLambda0117AF07": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "78189f4dfe5d3285e4d33aa89051f7fbbde587cb5b856de9bbd9b4c2a9f4f7a1.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TEACHER_CLASSES_TABLE": {
+       "Ref": "TeacherToClassesTable50717B2E"
+      },
+      "CLASS_ATTRIBUTES_TABLE": {
+       "Ref": "ClassAttributesTable1074E5D5"
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/GetClassesLambda/Resource",
+    "aws:asset:path": "asset.78189f4dfe5d3285e4d33aa89051f7fbbde587cb5b856de9bbd9b4c2a9f4f7a1",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetStudentsLambdaCF38FCD4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "7fac3b4ee1dc74d38c01d09a0488ac8389b023063106ce2bdd4b088d6dadd58e.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CLASS_STUDENTS_TABLE": {
+       "Ref": "ClassToStudentsTableFFD658EF"
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/GetStudentsLambda/Resource",
+    "aws:asset:path": "asset.7fac3b4ee1dc74d38c01d09a0488ac8389b023063106ce2bdd4b088d6dadd58e",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetStudentProfileLambda2EFC6847": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "7606c3dce5a5c0071e12d24e1669dbb6562aa329e6e72a86df54f65653d639e5.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "STUDENT_PROFILES_TABLE": {
+       "Ref": "StudentProfilesTableBA32A00C"
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/GetStudentProfileLambda/Resource",
+    "aws:asset:path": "asset.7606c3dce5a5c0071e12d24e1669dbb6562aa329e6e72a86df54f65653d639e5",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetChatHistoryLambda9709CC57": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "c64b697088ae177e7dfa8e142b74cbf5122f14d5725338b9f6cb530e9a9351ff.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CHAT_HISTORY_TABLE": {
+       "Ref": "ChatHistoryTableA22BA13C"
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/GetChatHistoryLambda/Resource",
+    "aws:asset:path": "asset.c64b697088ae177e7dfa8e142b74cbf5122f14d5725338b9f6cb530e9a9351ff",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "EditStudentProfileLambda767DF0E9": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "8a63a8ede6fc8155f3271e1259b16f3b55b09f17a3f9aaae295e878ca35bd639.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "STUDENT_PROFILES_TABLE": {
+       "Ref": "StudentProfilesTableBA32A00C"
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/EditStudentProfileLambda/Resource",
+    "aws:asset:path": "asset.8a63a8ede6fc8155f3271e1259b16f3b55b09f17a3f9aaae295e878ca35bd639",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "K12CoTeacherRestApi24017419": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "REST API for K-12 Co-Teacher application",
+    "Name": "K12 Co-Teacher REST API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Resource"
+   }
+  },
+  "K12CoTeacherRestApiCloudWatchRoleECD6E7D5": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/CloudWatchRole/Resource"
+   }
+  },
+  "K12CoTeacherRestApiAccount33A5AA24": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApiCloudWatchRoleECD6E7D5",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "K12CoTeacherRestApi24017419"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Account"
+   }
+  },
+  "K12CoTeacherRestApiDeployment3641D87D197ea01f1ef2a29217417ddd9fceba42": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "REST API for K-12 Co-Teacher application",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "DependsOn": [
+    "K12CoTeacherRestApieditStudentProfileOPTIONSC1173F08",
+    "K12CoTeacherRestApieditStudentProfilePOSTADE58526",
+    "K12CoTeacherRestApieditStudentProfile79BFF256",
+    "K12CoTeacherRestApigetClassesForDashboardOPTIONS5B4A8095",
+    "K12CoTeacherRestApigetClassesForDashboardPOST32442AD7",
+    "K12CoTeacherRestApigetClassesForDashboardDC5CBA35",
+    "K12CoTeacherRestApigetHistoryOPTIONS329F9EEA",
+    "K12CoTeacherRestApigetHistoryPOST67672948",
+    "K12CoTeacherRestApigetHistoryA1D98B19",
+    "K12CoTeacherRestApigetStudentProfileOPTIONS8B0B5039",
+    "K12CoTeacherRestApigetStudentProfilePOST4DA1F9FF",
+    "K12CoTeacherRestApigetStudentProfileD3B26224",
+    "K12CoTeacherRestApigetStudentsForClassOPTIONS5EF37034",
+    "K12CoTeacherRestApigetStudentsForClassPOST74784569",
+    "K12CoTeacherRestApigetStudentsForClass7602B31C",
+    "K12CoTeacherRestApiOPTIONSD2EEE0DB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "K12CoTeacherRestApiDeploymentStageprodDCCD5221": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "K12CoTeacherRestApiDeployment3641D87D197ea01f1ef2a29217417ddd9fceba42"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "K12CoTeacherRestApiAccount33A5AA24"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "K12CoTeacherRestApiOPTIONSD2EEE0DB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetClassesForDashboardDC5CBA35": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "getClassesForDashboard",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getClassesForDashboard/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetClassesForDashboardOPTIONS5B4A8095": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetClassesForDashboardDC5CBA35"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getClassesForDashboard/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetClassesForDashboardPOSTApiPermissionK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetClassesForDashboard725209C8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetClassesLambda0117AF07",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/",
+       {
+        "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+       },
+       "/POST/getClassesForDashboard"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getClassesForDashboard/POST/ApiPermission.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getClassesForDashboard"
+   }
+  },
+  "K12CoTeacherRestApigetClassesForDashboardPOSTApiPermissionTestK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetClassesForDashboardA5B8A9EC": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetClassesLambda0117AF07",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/test-invoke-stage/POST/getClassesForDashboard"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getClassesForDashboard/POST/ApiPermission.Test.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getClassesForDashboard"
+   }
+  },
+  "K12CoTeacherRestApigetClassesForDashboardPOST32442AD7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetClassesLambda0117AF07",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetClassesForDashboardDC5CBA35"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getClassesForDashboard/POST/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentsForClass7602B31C": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "getStudentsForClass",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentsForClass/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentsForClassOPTIONS5EF37034": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetStudentsForClass7602B31C"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentsForClass/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentsForClassPOSTApiPermissionK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetStudentsForClassC2BA513D": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetStudentsLambdaCF38FCD4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/",
+       {
+        "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+       },
+       "/POST/getStudentsForClass"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentsForClass/POST/ApiPermission.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getStudentsForClass"
+   }
+  },
+  "K12CoTeacherRestApigetStudentsForClassPOSTApiPermissionTestK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetStudentsForClass898D14BE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetStudentsLambdaCF38FCD4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/test-invoke-stage/POST/getStudentsForClass"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentsForClass/POST/ApiPermission.Test.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getStudentsForClass"
+   }
+  },
+  "K12CoTeacherRestApigetStudentsForClassPOST74784569": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetStudentsLambdaCF38FCD4",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetStudentsForClass7602B31C"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentsForClass/POST/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentProfileD3B26224": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "getStudentProfile",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentProfile/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentProfileOPTIONS8B0B5039": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetStudentProfileD3B26224"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentProfile/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetStudentProfilePOSTApiPermissionK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetStudentProfile4C7A99B3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetStudentProfileLambda2EFC6847",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/",
+       {
+        "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+       },
+       "/POST/getStudentProfile"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentProfile/POST/ApiPermission.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getStudentProfile"
+   }
+  },
+  "K12CoTeacherRestApigetStudentProfilePOSTApiPermissionTestK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetStudentProfileD16B6D80": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetStudentProfileLambda2EFC6847",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/test-invoke-stage/POST/getStudentProfile"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentProfile/POST/ApiPermission.Test.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getStudentProfile"
+   }
+  },
+  "K12CoTeacherRestApigetStudentProfilePOST4DA1F9FF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetStudentProfileLambda2EFC6847",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetStudentProfileD3B26224"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getStudentProfile/POST/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetHistoryA1D98B19": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "getHistory",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getHistory/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetHistoryOPTIONS329F9EEA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetHistoryA1D98B19"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getHistory/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApigetHistoryPOSTApiPermissionK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetHistoryFA916FF9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetChatHistoryLambda9709CC57",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/",
+       {
+        "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+       },
+       "/POST/getHistory"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getHistory/POST/ApiPermission.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getHistory"
+   }
+  },
+  "K12CoTeacherRestApigetHistoryPOSTApiPermissionTestK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTgetHistory8D8A17E0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "GetChatHistoryLambda9709CC57",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/test-invoke-stage/POST/getHistory"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getHistory/POST/ApiPermission.Test.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..getHistory"
+   }
+  },
+  "K12CoTeacherRestApigetHistoryPOST67672948": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "GetChatHistoryLambda9709CC57",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApigetHistoryA1D98B19"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/getHistory/POST/Resource"
+   }
+  },
+  "K12CoTeacherRestApieditStudentProfile79BFF256": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "K12CoTeacherRestApi24017419",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "editStudentProfile",
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/editStudentProfile/Resource"
+   }
+  },
+  "K12CoTeacherRestApieditStudentProfileOPTIONSC1173F08": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApieditStudentProfile79BFF256"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/editStudentProfile/OPTIONS/Resource"
+   }
+  },
+  "K12CoTeacherRestApieditStudentProfilePOSTApiPermissionK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTeditStudentProfile3D705155": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "EditStudentProfileLambda767DF0E9",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/",
+       {
+        "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+       },
+       "/POST/editStudentProfile"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/editStudentProfile/POST/ApiPermission.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..editStudentProfile"
+   }
+  },
+  "K12CoTeacherRestApieditStudentProfilePOSTApiPermissionTestK12CoTeacherStackK12CoTeacherRestApi8DE2CE1BPOSTeditStudentProfileDC9D51B5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "EditStudentProfileLambda767DF0E9",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherRestApi24017419"
+       },
+       "/test-invoke-stage/POST/editStudentProfile"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/editStudentProfile/POST/ApiPermission.Test.K12CoTeacherStackK12CoTeacherRestApi8DE2CE1B.POST..editStudentProfile"
+   }
+  },
+  "K12CoTeacherRestApieditStudentProfilePOSTADE58526": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "EditStudentProfileLambda767DF0E9",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "K12CoTeacherRestApieditStudentProfile79BFF256"
+    },
+    "RestApiId": {
+     "Ref": "K12CoTeacherRestApi24017419"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherRestApi/Default/editStudentProfile/POST/Resource"
+   }
+  },
+  "InferenceLambdaB235318C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-412072465402-us-east-1",
+     "S3Key": "ad775015ef35b2e020727a93d6689e2e96a25ca26eccb9bad263c01fe7b1f3e0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CHAT_HISTORY_TABLE": {
+       "Ref": "ChatHistoryTableA22BA13C"
+      },
+      "STUDENT_PROFILES_TABLE": {
+       "Ref": "StudentProfilesTableBA32A00C"
+      },
+      "CLASS_ATTRIBUTES_TABLE": {
+       "Ref": "ClassAttributesTable1074E5D5"
+      },
+      "CLASS_STUDENTS_TABLE": {
+       "Ref": "ClassToStudentsTableFFD658EF"
+      },
+      "TEACHER_CLASSES_TABLE": {
+       "Ref": "TeacherToClassesTable50717B2E"
+      },
+      "STUDENT_PROFILE_API_ENDPOINT": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/getStudentProfile"
+        ]
+       ]
+      },
+      "EDIT_STUDENT_PROFILE_API_ENDPOINT": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/editStudentProfile"
+        ]
+       ]
+      }
+     }
+    },
+    "Handler": "lambda_function.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaExecutionRoleD5C26073",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "LambdaExecutionRoleD5C26073"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/InferenceLambda/Resource",
+    "aws:asset:path": "asset.ad775015ef35b2e020727a93d6689e2e96a25ca26eccb9bad263c01fe7b1f3e0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "K12CoTeacherWebSocketApi02E96C0D": {
+   "Type": "AWS::ApiGatewayV2::Api",
+   "Properties": {
+    "Description": "WebSocket API for real-time chat functionality",
+    "Name": "K12 Co-Teacher WebSocket API",
+    "ProtocolType": "WEBSOCKET",
+    "RouteSelectionExpression": "$request.body.action"
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/Resource"
+   }
+  },
+  "K12CoTeacherWebSocketApiconnectRouteInferenceIntegrationPermission62C9815E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "InferenceLambdaB235318C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:412072465402:",
+       {
+        "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+       },
+       "/*$connect"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/$connect-Route/InferenceIntegration-Permission"
+   }
+  },
+  "K12CoTeacherWebSocketApiconnectRouteInferenceIntegration6B02126E": {
+   "Type": "AWS::ApiGatewayV2::Integration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+    },
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+       {
+        "Fn::GetAtt": [
+         "InferenceLambdaB235318C",
+         "Arn"
+        ]
+       },
+       "/invocations"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/$connect-Route/InferenceIntegration/Resource"
+   }
+  },
+  "K12CoTeacherWebSocketApiconnectRouteB608EA93": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+    },
+    "AuthorizationType": "NONE",
+    "RouteKey": "$connect",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "K12CoTeacherWebSocketApiconnectRouteInferenceIntegration6B02126E"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/$connect-Route/Resource"
+   }
+  },
+  "K12CoTeacherWebSocketApidisconnectRoute8D37CD6F": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+    },
+    "AuthorizationType": "NONE",
+    "RouteKey": "$disconnect",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "K12CoTeacherWebSocketApiconnectRouteInferenceIntegration6B02126E"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/$disconnect-Route/Resource"
+   }
+  },
+  "K12CoTeacherWebSocketApidefaultRoute0CF482D1": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+    },
+    "AuthorizationType": "NONE",
+    "RouteKey": "$default",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "K12CoTeacherWebSocketApiconnectRouteInferenceIntegration6B02126E"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherWebSocketApi/$default-Route/Resource"
+   }
+  },
+  "WebSocketStageC46B7E43": {
+   "Type": "AWS::ApiGatewayV2::Stage",
+   "Properties": {
+    "ApiId": {
+     "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+    },
+    "AutoDeploy": true,
+    "StageName": "dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/WebSocketStage/Resource"
+   }
+  },
+  "K12CoTeacherAmplifyApp": {
+   "Type": "AWS::Amplify::App",
+   "Properties": {
+    "Description": "K-12 Co-Teacher Next.js Application",
+    "EnvironmentVariables": [
+     {
+      "Name": "NEXT_PUBLIC_WS_URL",
+      "Value": {
+       "Fn::Join": [
+        "",
+        [
+         "wss://",
+         {
+          "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/dev"
+        ]
+       ]
+      }
+     },
+     {
+      "Name": "NEXT_PUBLIC_COGNITO_USER_POOL_ID",
+      "Value": {
+       "Ref": "K12CoTeacherUserPool3A1146D6"
+      }
+     },
+     {
+      "Name": "NEXT_PUBLIC_COGNITO_CLIENT_ID",
+      "Value": {
+       "Ref": "K12CoTeacherUserPoolClient40534F36"
+      }
+     },
+     {
+      "Name": "NEXT_PUBLIC_COGNITO_DOMAIN",
+      "Value": {
+       "Ref": "K12CoTeacherUserPoolDomain1FEFD953"
+      }
+     },
+     {
+      "Name": "CLASSES_API_ENDPOINT",
+      "Value": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/getClassesForDashboard"
+        ]
+       ]
+      }
+     },
+     {
+      "Name": "STUDENTS_API_ENDPOINT",
+      "Value": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/getStudentsForClass"
+        ]
+       ]
+      }
+     },
+     {
+      "Name": "STUDENT_PROFILE_API_ENDPOINT",
+      "Value": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/getStudentProfile"
+        ]
+       ]
+      }
+     },
+     {
+      "Name": "NEXT_PUBLIC_CHAT_HISTORY_API",
+      "Value": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Ref": "K12CoTeacherRestApi24017419"
+         },
+         ".execute-api.us-east-1.",
+         {
+          "Ref": "AWS::URLSuffix"
+         },
+         "/",
+         {
+          "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+         },
+         "/getHistory"
+        ]
+       ]
+      }
+     }
+    ],
+    "Name": "k12-coteacher-app",
+    "Platform": "WEB_COMPUTE"
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/K12CoTeacherAmplifyApp"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12QTW/CMAyGfwv34EE57MyHJu0wDZVNOyI3NV2giasmAVVR/vvUL+g4+fHrV/HrJJAsE1jM8GbnMr/MS5VBODiUF4E3ewySC6McQ/i2VO+ZS7E9mTuPsC0VGTcdDcrY7lijMlNDr0SRNwY15xmEL8xKai0dRKFQQ0i519oaRYk6yxHCmzfSKe4enPKeaq2sVWyisKsjWkvOwrotwq5g4+WF3AYtCaxUgY5u2EBIybp1pbo1D1xLyd44saOq5EYP9026g8Oiy9ZDSpZ9Lal7/oPcL+ftcKBxOizpOE5SXBMIP5QduE04JqiUuGspe0eP9t04KmocD39qn8z/k0aBuirVqYFuRxUf4bqfak3KFK3/07vKuygM5wRn+3JNEli+wmJ2tkrNa2+c0gRpX/8AqLBhiUsCAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "K12CoTeacherStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "K12CoTeacherRestApiEndpointF034A06E": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "K12CoTeacherRestApi24017419"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "UserPoolId": {
+   "Description": "Cognito User Pool ID",
+   "Value": {
+    "Ref": "K12CoTeacherUserPool3A1146D6"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "Cognito User Pool Client ID",
+   "Value": {
+    "Ref": "K12CoTeacherUserPoolClient40534F36"
+   }
+  },
+  "UserPoolDomain": {
+   "Description": "Cognito User Pool Domain",
+   "Value": {
+    "Ref": "K12CoTeacherUserPoolDomain1FEFD953"
+   }
+  },
+  "CognitoAuthUrl": {
+   "Description": "Cognito Authentication URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "K12CoTeacherUserPoolDomain1FEFD953"
+      },
+      ".auth.us-east-1.amazoncognito.com"
+     ]
+    ]
+   }
+  },
+  "AmplifyAppId": {
+   "Description": "Amplify App ID",
+   "Value": {
+    "Fn::GetAtt": [
+     "K12CoTeacherAmplifyApp",
+     "AppId"
+    ]
+   }
+  },
+  "AmplifyAppName": {
+   "Description": "Amplify App Name",
+   "Value": "k12-coteacher-app"
+  },
+  "RestApiUrl": {
+   "Description": "REST API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "K12CoTeacherRestApi24017419"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "K12CoTeacherRestApiDeploymentStageprodDCCD5221"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "WebSocketApiUrl": {
+   "Description": "WebSocket API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "wss://",
+      {
+       "Ref": "K12CoTeacherWebSocketApi02E96C0D"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/dev"
+     ]
+    ]
+   }
+  },
+  "ChatHistoryTableName": {
+   "Description": "DynamoDB Chat History Table Name",
+   "Value": {
+    "Ref": "ChatHistoryTableA22BA13C"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

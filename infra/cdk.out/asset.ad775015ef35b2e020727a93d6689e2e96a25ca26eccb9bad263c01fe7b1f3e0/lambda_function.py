@@ -1,6 +1,7 @@
 import json
 import boto3
 import uuid
+import os
 from conversation_history import *
 from student_utils import *
 from utils import *
@@ -82,16 +83,19 @@ def lambda_handler(event, context):
         studentProfiles = []
         for student in student_ids:
             try:
-                student_profile_api_endpoint = os.environ.get('STUDENT_PROFILE_API_ENDPOINT')
-                if not student_profile_api_endpoint:
+                # Use environment variable for API endpoint
+                api_endpoint = os.environ.get('STUDENT_PROFILE_API_ENDPOINT')
+                if not api_endpoint:
                     raise RuntimeError("STUDENT_PROFILE_API_ENDPOINT environment variable is not set")
-                studentProfile = post_json(student_profile_api_endpoint, {"studentID": student})
+                studentProfile = post_json(api_endpoint, {"studentID": student})
                 studentProfiles.append(studentProfile)
             except Exception as e:
                 print(f"Error fetching student profile for {student}: {e}")
                 studentProfiles.append({})
         
         print(f"Student Profiles: {studentProfiles}")
+        # students_to_disabilties = get_students_data(studentProfiles)
+        # print(f"Student to dis mapping: {students_to_disabilties}")
 
         system_prompt = ""
         # conditional claude prompts for student vs. general chat
@@ -99,19 +103,18 @@ def lambda_handler(event, context):
             print("student chat")
             student_profile_clean = studentProfiles[0].get("body", {}).get("Item", {})
             print(student_profile_clean)
-            formatted_profile_2 = format_student_profile_2(student_profile_clean, teacher_id)
-            print(formatted_profile_2)
+            formatted_profile = format_student_profile(student_profile_clean, teacher_id)
+            print(formatted_profile)
             system_prompt = load_prompt_template("prompts/3_7_prompt_student_chat.txt", {
-                "STUDENT_PROFILE": formatted_profile_2
+                "STUDENT_PROFILE": formatted_profile
             })
             print(system_prompt)
             
         elif chat_type == "general":
             print("general chat")
             # mapping
-            students_to_disabilties_2 = get_students_data_2(studentProfiles)
-            print(students_to_disabilties_2)
-            formatted_mappings = json.dumps(students_to_disabilties_2, indent=2)
+            students_to_disabilties = get_students_data(studentProfiles)
+            formatted_mappings = json.dumps(students_to_disabilties, indent=2)
             system_prompt = load_prompt_template("prompts/3_7_prompt_all_chat.txt", {
                 "MAPPINGS_JSON": formatted_mappings
             })
@@ -214,10 +217,11 @@ def lambda_handler(event, context):
         
         if stop_reason == "tool_use" and tool_use.get('name') == 'editStudentProfile':
             try:
-                editStudentProfileApiEndpoint = os.environ.get('EDIT_STUDENT_PROFILE_API_ENDPOINT')
-                if not editStudentProfileApiEndpoint:
+                # Use environment variable for API endpoint
+                api_endpoint = os.environ.get('EDIT_STUDENT_PROFILE_API_ENDPOINT')
+                if not api_endpoint:
                     raise RuntimeError("EDIT_STUDENT_PROFILE_API_ENDPOINT environment variable is not set")
-                tool_result = post_json(editStudentProfileApiEndpoint, 
+                tool_result = post_json(api_endpoint, 
                                 {"studentID": student_ids[0],
                                 "teacherID": teacher_id,
                                 "teacherComment": body})

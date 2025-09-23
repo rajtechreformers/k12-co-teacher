@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_ENDPOINT = process.env.CLASSES_API_ENDPOINT || 'https://6ll9oei3u3.execute-api.us-west-2.amazonaws.com/dev/getClassesForDashboard';
+const endpoint = process.env.CLASSES_API_ENDPOINT;
+if (!endpoint) {
+  throw new Error("CLASSES_API_ENDPOINT is not defined");
+}
+
+const API_ENDPOINT: string = endpoint;
+
 
 export async function POST(request: NextRequest) {
   try {
