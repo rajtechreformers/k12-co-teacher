@@ -52,8 +52,13 @@ export default function StudentChatPage() {
   const classId = params.classId as string;
   const studentId = params.studentId as string;
 
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+  if (!wsUrl) {
+    throw new Error("NEXT_PUBLIC_WS_URL is not defined");
+  }
+
   const { isConnected, connect, disconnect, sendMessage } = useWebSocket({
-    url: process.env.NEXT_PUBLIC_WS_URL || 'wss://zr2han1x4j.execute-api.us-west-2.amazonaws.com/dev',
+    url: wsUrl,
     onMessage: (data) => {
       if (data.message) {
         setCurrentAIMessage(prev => prev + data.message);
