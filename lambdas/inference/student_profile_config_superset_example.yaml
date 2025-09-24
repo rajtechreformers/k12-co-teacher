@@ -81,12 +81,6 @@ profile_fields:
       - "psychologist"
     fallback: "N/A"
   
-  - field: "teacherComments"
-    display_name: "Teacher Comments"
-    enabled: true
-    format: "dynamic"
-    fallback: "No comments yet"
-  
   - field: "behavioral_notes"
     display_name: "Behavioral Notes"
     enabled: false
