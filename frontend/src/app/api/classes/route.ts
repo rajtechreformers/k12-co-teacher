@@ -7,12 +7,11 @@ if (!endpoint) {
 
 const API_ENDPOINT: string = endpoint;
 
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log("Incoming body:", body);
-    console.log("Using hardcoded API endpoint:", API_ENDPOINT);
+    console.log("Incoming body from frontend:", body);
+    console.log("Using API endpoint from env:", API_ENDPOINT);
 
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
@@ -22,14 +21,27 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-    console.log("API Gateway response:", data);
+    const rawText = await response.text(); // log raw first
+    console.log("Backend response status:", response.status);
+    console.log("Backend raw response:", rawText);
 
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error('API Error:', error);
+    let parsed;
+    try {
+      parsed = JSON.parse(rawText);
+    } catch (parseError) {
+      console.error("Failed to parse backend JSON:", parseError);
+      parsed = { raw: rawText }; // fallback
+    }
+
+    return NextResponse.json(parsed, { status: response.status });
+  } catch (error: any) {
+    console.error("Error in /api/classes route:", error);
+
     return NextResponse.json(
-      { statusCode: 500, body: JSON.stringify({ error: 'Internal server error' }) },
+      {
+        error: "Internal server error",
+        details: error.message || String(error),
+      },
       { status: 500 }
     );
   }
